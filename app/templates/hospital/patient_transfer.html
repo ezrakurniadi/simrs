@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Transfer Patient{% endblock %}
+
+{% block nurse_breadcrumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('hospital.nurse_ward_dashboard') }}">Ward Dashboard</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Patient Transfer</li>
+  </ol>
+</nav>
+<div class="d-flex justify-content-end mb-3">
+  <a href="{{ url_for('hospital.nurse_ward_dashboard') }}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left"></i> Back to Ward Dashboard
+  </a>
+</div>
+{% endblock %}
+
+{% block admin_breadcrumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('hospital.dashboard') }}">Hospital Management</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Patient Transfer</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Transfer Patient</h1>
+            <p>Transfer a patient from one bed to another.</p>
+            
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group">
+                    {{ form.patient_id.label(class="form-label") }}
+                    {{ form.patient_id(class="form-control") }}
+                    {% if form.patient_id.errors %}
+                        <div class="text-danger">
+                            {% for error in form.patient_id.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    {{ form.current_bed_id.label(class="form-label") }}
+                    {{ form.current_bed_id(class="form-control") }}
+                    {% if form.current_bed_id.errors %}
+                        <div class="text-danger">
+                            {% for error in form.current_bed_id.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    {{ form.new_bed_id.label(class="form-label") }}
+                    {{ form.new_bed_id(class="form-control") }}
+                    {% if form.new_bed_id.errors %}
+                        <div class="text-danger">
+                            {% for error in form.new_bed_id.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    {{ form.reason.label(class="form-label") }}
+                    {{ form.reason(class="form-control", rows="4") }}
+                    {% if form.reason.errors %}
+                        <div class="text-danger">
+                            {% for error in form.reason.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group mt-3">
+                    {{ form.submit(class="btn btn-primary") }}
+                    <a href="{{ url_for('hospital.nurse_ward_dashboard') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

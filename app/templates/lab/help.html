@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Lab Technician Help - EHR System{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Lab Technician Help Documentation</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>Overview</h2>
+        </div>
+        <div class="card-body">
+            <p>Welcome to the Lab Technician Help Documentation. This guide will help you understand how to use the laboratory management features of the EHR system.</p>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>Dashboard</h2>
+        </div>
+        <div class="card-body">
+            <p>The Lab Technician Dashboard is your main workspace where you can:</p>
+            <ul>
+                <li>View all lab orders that need processing</li>
+                <li>Search and filter lab orders by patient, test type, physician, date, and status</li>
+                <li>Enter results for pending lab orders</li>
+                <li>View details of specific lab orders</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>Processing Lab Orders</h2>
+        </div>
+        <div class="card-body">
+            <h3>Viewing Lab Orders</h3>
+            <p>On the dashboard, you'll see a table of lab orders. You can:</p>
+            <ul>
+                <li>Click "View Details" to see more information about a specific order</li>
+                <li>Click "Enter Results" for orders that haven't been completed yet</li>
+            </ul>
+            
+            <h3>Entering Lab Results</h3>
+            <p>To enter results for a lab order:</p>
+            <ol>
+                <li>Click the "Enter Results" button next to the lab order</li>
+                <li>Fill in the result data in the provided text area</li>
+                <li>Click "Submit Results" to save and mark the order as completed</li>
+            </ol>
+            
+            <h3>Viewing Lab Order Details</h3>
+            <p>To view detailed information about a lab order:</p>
+            <ol>
+                <li>Click the "View Details" button next to the lab order</li>
+                <li>You'll see patient information, test type, ordering physician, and any results if available</li>
+            </ol>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>Search and Filter</h2>
+        </div>
+        <div class="card-body">
+            <p>You can search and filter lab orders using the search form on the dashboard:</p>
+            <ul>
+                <li><strong>Patient Name</strong>: Search by patient's first or last name</li>
+                <li><strong>Test Type</strong>: Filter by specific test types (CBC, BMP, etc.)</li>
+                <li><strong>Ordering Physician</strong>: Search by the physician who ordered the test</li>
+                <li><strong>Date Range</strong>: Filter by order date range</li>
+                <li><strong>Status</strong>: Filter by order status (Pending or Completed)</li>
+            </ul>
+            <p>Click "Clear" to reset all filters and see all lab orders.</p>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>Profile Management</h2>
+        </div>
+        <div class="card-body">
+            <p>You can manage your profile information by clicking the "Profile" link in the navigation bar:</p>
+            <ul>
+                <li>Update your first and last name</li>
+                <li>Change your password</li>
+                <li>View your assigned roles</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>Support</h2>
+        </div>
+        <div class="card-body">
+            <p>If you need additional help or encounter any issues:</p>
+            <ul>
+                <li>Contact your system administrator</li>
+                <li>Refer to the general user manual</li>
+                <li>Submit a support ticket through the admin panel</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Order Lab Test{% endblock %}
+
+{% block content %}
+<h1>Order Lab Test</h1>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Patient: {{ patient.first_name }} {{ patient.last_name }}</h2>
+  </div>
+  <div class="card-body">
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      
+      <div class="mb-3">
+        {{ form.test_type.label(class="form-label") }}
+        {{ form.test_type(class="form-select") }}
+        {% for error in form.test_type.errors %}
+          <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+      </div>
+      
+      <div class="mb-3">
+        {{ form.notes.label(class="form-label") }}
+        {{ form.notes(class="form-control", rows="3") }}
+        {% for error in form.notes.errors %}
+          <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+      </div>
+      
+      <div class="mb-3">
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('lab.view_lab_orders', patient_id=patient.id) }}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

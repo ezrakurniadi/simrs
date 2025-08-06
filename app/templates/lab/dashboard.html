@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Lab Technician Dashboard{% endblock %}
+
+{% block content %}
+<h1>Lab Technician Dashboard</h1>
+
+<div class="card mb-4">
+  <div class="card-header">
+    <h2>Search and Filter</h2>
+  </div>
+  <div class="card-body">
+    <form method="GET" class="row g-3">
+      <div class="col-md-4">
+        <label for="patient_name" class="form-label">Patient Name</label>
+        <input type="text" class="form-control" id="patient_name" name="patient_name" value="{{ form.patient_name.data or '' }}">
+      </div>
+      <div class="col-md-4">
+        <label for="test_type" class="form-label">Test Type</label>
+        <select class="form-select" id="test_type" name="test_type">
+          <option value="">All Test Types</option>
+          <option value="Complete Blood Count (CBC)" {% if form.test_type.data == 'Complete Blood Count (CBC)' %}selected{% endif %}>Complete Blood Count (CBC)</option>
+          <option value="Basic Metabolic Panel (BMP)" {% if form.test_type.data == 'Basic Metabolic Panel (BMP)' %}selected{% endif %}>Basic Metabolic Panel (BMP)</option>
+          <option value="Comprehensive Metabolic Panel (CMP)" {% if form.test_type.data == 'Comprehensive Metabolic Panel (CMP)' %}selected{% endif %}>Comprehensive Metabolic Panel (CMP)</option>
+          <option value="Lipid Panel" {% if form.test_type.data == 'Lipid Panel' %}selected{% endif %}>Lipid Panel</option>
+          <option value="Thyroid Stimulating Hormone (TSH)" {% if form.test_type.data == 'Thyroid Stimulating Hormone (TSH)' %}selected{% endif %}>Thyroid Stimulating Hormone (TSH)</option>
+          <option value="Hemoglobin A1C" {% if form.test_type.data == 'Hemoglobin A1C' %}selected{% endif %}>Hemoglobin A1C</option>
+          <option value="Urinalysis" {% if form.test_type.data == 'Urinalysis' %}selected{% endif %}>Urinalysis</option>
+          <option value="Other" {% if form.test_type.data == 'Other' %}selected{% endif %}>Other</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label for="ordered_by" class="form-label">Ordering Physician</label>
+        <input type="text" class="form-control" id="ordered_by" name="ordered_by" value="{{ form.ordered_by.data or '' }}">
+      </div>
+      <div class="col-md-4">
+        <label for="start_date" class="form-label">Start Date</label>
+        <input type="date" class="form-control" id="start_date" name="start_date" value="{{ form.start_date.data.strftime('%Y-%m-%d') if form.start_date.data else '' }}">
+      </div>
+      <div class="col-md-4">
+        <label for="end_date" class="form-label">End Date</label>
+        <input type="date" class="form-control" id="end_date" name="end_date" value="{{ form.end_date.data.strftime('%Y-%m-%d') if form.end_date.data else '' }}">
+      </div>
+      <div class="col-md-4">
+        <label for="status" class="form-label">Status</label>
+        <select class="form-select" id="status" name="status">
+          <option value="all" {% if form.status.data == 'all' %}selected{% endif %}>All</option>
+          <option value="Ordered" {% if form.status.data == 'Ordered' %}selected{% endif %}>Pending</option>
+          <option value="Completed" {% if form.status.data == 'Completed' %}selected{% endif %}>Completed</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a href="{{ url_for('lab.technician_dashboard') }}" class="btn btn-secondary">Clear</a>
+      </div>
+    </form>
+  </div>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Lab Orders</h2>
+  </div>
+  <div class="card-body">
+    {% if lab_orders %}
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Test Type</th>
+              <th>Order Date</th>
+              <th>Ordered By</th>
+              <th>Status</th>
+              <th>Completed Date</th>
+              <th>Performed By</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in lab_orders %}
+              <tr>
+                <td>
+                  {{ order.patient.first_name }} {{ order.patient.last_name }}
+                </td>
+                <td>{{ order.test_type }}</td>
+                <td>{{ order.order_date.strftime('%Y-%m-%d %H:%M:%S') if order.order_date else 'N/A' }}</td>
+                <td>
+                  {% if order.orderer %}
+                    {{ order.orderer.first_name }} {{ order.orderer.last_name }}
+                  {% else %}
+                    N/A
+                  {% endif %}
+                </td>
+                <td>
+                  {% if order.status == 'Ordered' %}
+                    <span class="badge bg-warning">Pending</span>
+                  {% elif order.status == 'Completed' %}
+                    <span class="badge bg-success">Completed</span>
+                  {% else %}
+                    <span class="badge bg-secondary">{{ order.status }}</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if order.lab_results and order.lab_results|length > 0 %}
+                    {{ order.lab_results[0].result_date.strftime('%Y-%m-%d %H:%M:%S') if order.lab_results[0].result_date else 'N/A' }}
+                  {% else %}
+                    N/A
+                  {% endif %}
+                </td>
+                <td>
+                  {% if order.lab_results and order.lab_results|length > 0 and order.lab_results[0].performer %}
+                    {{ order.lab_results[0].performer.first_name }} {{ order.lab_results[0].performer.last_name }}
+                  {% else %}
+                    N/A
+                  {% endif %}
+                </td>
+                <td>
+                  <a href="{{ url_for('lab.view_lab_order', patient_id=order.patient.id, order_id=order.id) }}" class="btn btn-sm btn-info">View Details</a>
+                  {% if order.status != 'Completed' %}
+                    <a href="{{ url_for('lab.enter_lab_result', patient_id=order.patient.id, order_id=order.id) }}" class="btn btn-sm btn-primary">Enter Results</a>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p>No lab orders found matching your search criteria.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

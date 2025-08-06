@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Ward-Room Class Assignment{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Edit Ward-Room Class Assignment</h1>
+    
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        
+        <div class="mb-3">
+            {{ form.ward_id.label(class="form-label") }}
+            {{ form.ward_id(class="form-select") }}
+            {% for error in form.ward_id.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        
+        <div class="mb-3">
+            {{ form.room_class_id.label(class="form-label") }}
+            {{ form.room_class_id(class="form-select") }}
+            {% for error in form.room_class_id.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        
+        <div class="mb-3">
+            {{ form.priority.label(class="form-label") }}
+            {{ form.priority(class="form-control") }}
+            {% for error in form.priority.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        
+        <div class="mb-3">
+            {{ form.min_capacity.label(class="form-label") }}
+            {{ form.min_capacity(class="form-control") }}
+            {% for error in form.min_capacity.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        
+        <div class="mb-3">
+            {{ form.max_capacity.label(class="form-label") }}
+            {{ form.max_capacity(class="form-control") }}
+            {% for error in form.max_capacity.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        
+        <div class="mb-3 form-check">
+            {{ form.is_active(class="form-check-input") }}
+            {{ form.is_active.label(class="form-check-label") }}
+            {% for error in form.is_active.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        
+        <div class="mb-3">
+            <a href="{{ url_for('hospital.list_ward_room_class_assignments') }}" class="btn btn-secondary">Cancel</a>
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+</div>
+{% endblock %}

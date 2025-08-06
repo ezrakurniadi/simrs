@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Add Clinical Note{% endblock %}
+
+{% block content %}
+<h1>Add Clinical Note for {{ patient.first_name }} {{ patient.last_name }}</h1>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Patient Information</h2>
+  </div>
+  <div class="card-body">
+    <p><strong>ID:</strong> {{ patient.id }}</p>
+    <p><strong>Name:</strong> {{ patient.first_name }} {{ patient.last_name }}</p>
+    <p><strong>Date of Birth:</strong> {{ patient.date_of_birth.strftime('%Y-%m-%d') if patient.date_of_birth else 'N/A' }}</p>
+    <p><strong>Gender:</strong> {{ patient.gender }}</p>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header">
+    <h2>New Clinical Note</h2>
+  </div>
+  <div class="card-body">
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      
+      <div class="form-group">
+        {{ form.date.label(class="form-label") }}
+        {{ form.date(class="form-control") }}
+        {% if form.date.errors %}
+          <div class="text-danger">
+            {% for error in form.date.errors %}
+              <small>{{ error }}</small>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      
+      <div class="form-group">
+        {{ form.note_type.label(class="form-label") }}
+        {{ form.note_type(class="form-control") }}
+        {% if form.note_type.errors %}
+          <div class="text-danger">
+            {% for error in form.note_type.errors %}
+              <small>{{ error }}</small>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      
+      <div class="form-group">
+        {{ form.content.label(class="form-label") }}
+        {{ form.content(class="form-control", rows="10") }}
+        {% if form.content.errors %}
+          <div class="text-danger">
+            {% for error in form.content.errors %}
+              <small>{{ error }}</small>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      
+      <div class="form-group mt-3">
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('clinical_notes.view_clinical_notes', patient_id=patient.id) }}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

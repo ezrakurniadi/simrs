@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Patient List{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Patient List</h1>
+    
+    {% if patients %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Date of Birth</th>
+                    <th>Gender</th>
+                    <th>Phone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for patient in patients %}
+                <tr>
+                    <td>{{ patient.id }}</td>
+                    <td>{{ patient.first_name }} {{ patient.last_name }}</td>
+                    <td>{{ patient.date_of_birth }}</td>
+                    <td>{{ patient.gender }}</td>
+                    <td>{{ patient.phone }}</td>
+                    <td>
+                        <a href="{{ url_for('patients.view_patient', id=patient.id) }}" class="btn btn-sm btn-info">View</a>
+                        {% if current_user.has_role('Nurse') or current_user.has_role('Doctor') %}
+                        <a href="{{ url_for('patients.add_vitals', patient_id=patient.id) }}" class="btn btn-sm btn-primary">Add Vitals</a>
+                        <a href="{{ url_for('patients.add_allergy', patient_id=patient.id) }}" class="btn btn-sm btn-warning">Add Allergy</a>
+                        {% endif %}
+                        {% if current_user.has_role('Doctor') %}
+                        <a href="{{ url_for('patients.prescribe_medication', patient_id=patient.id) }}" class="btn btn-sm btn-success">Prescribe</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p>No patients found.</p>
+    {% endif %}
+    
+    <a href="{{ url_for('patients.index') }}" class="btn btn-secondary">Back to Patients</a>
+</div>
+{% endblock %}

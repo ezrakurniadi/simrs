@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Hospital Settings{% endblock %}
+
+{% block admin_breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('hospital.dashboard') }}">Hospital Management</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Hospital Settings</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Hospital Settings</h1>
+            <p>Manage hospital information and settings.</p>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Hospital Information</h5>
+                            <form method="POST">
+                                {{ form.hidden_tag() }}
+                                
+                                <div class="form-group">
+                                    {{ form.name.label(class="form-label") }}
+                                    {{ form.name(class="form-control") }}
+                                    {% if form.name.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.name.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group">
+                                    {{ form.code.label(class="form-label") }}
+                                    {{ form.code(class="form-control") }}
+                                    {% if form.code.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.code.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group">
+                                    {{ form.address.label(class="form-label") }}
+                                    {{ form.address(class="form-control", rows="3") }}
+                                    {% if form.address.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.address.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group">
+                                    {{ form.phone.label(class="form-label") }}
+                                    {{ form.phone(class="form-control") }}
+                                    {% if form.phone.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.phone.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group">
+                                    {{ form.email.label(class="form-label") }}
+                                    {{ form.email(class="form-control") }}
+                                    {% if form.email.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.email.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group">
+                                    {{ form.submit(class="btn btn-primary") }}
+                                    <a href="{{ url_for('hospital.dashboard') }}" class="btn btn-secondary">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

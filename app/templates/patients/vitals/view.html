@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Vital Signs{% endblock %}
+
+{% block content %}
+<h1>Vital Signs for {{ patient.first_name }} {{ patient.last_name }}</h1>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Patient Information</h2>
+  </div>
+  <div class="card-body">
+    <p><strong>ID:</strong> {{ patient.id }}</p>
+    <p><strong>Name:</strong> {{ patient.first_name }} {{ patient.last_name }}</p>
+    <p><strong>Date of Birth:</strong> {{ patient.date_of_birth.strftime('%Y-%m-%d') if patient.date_of_birth else 'N/A' }}</p>
+    <p><strong>Gender:</strong> {{ patient.gender }}</p>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header">
+    <h2>All Vital Signs</h2>
+  </div>
+  <div class="card-body">
+    {% if vitals %}
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Blood Pressure</th>
+              <th>Heart Rate</th>
+              <th>Temperature</th>
+              <th>Weight</th>
+              <th>Height</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for vital in vitals %}
+            <tr>
+              <td>{{ vital.date.strftime('%Y-%m-%d %H:%M:%S') if vital.date else 'N/A' }}</td>
+              <td>{{ vital.bp_systolic or 'N/A' }}/{{ vital.bp_diastolic or 'N/A' }} mmHg</td>
+              <td>{{ vital.heart_rate or 'N/A' }} bpm</td>
+              <td>{{ vital.temperature or 'N/A' }} °C</td>
+              <td>{{ vital.weight or 'N/A' }} kg</td>
+              <td>{{ vital.height or 'N/A' }} cm</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p>No vital signs recorded yet.</p>
+    {% endif %}
+    
+    <div class="mt-3">
+      <a href="{{ url_for('patients.add_vitals', patient_id=patient.id) }}" class="btn btn-primary">Add Vital Signs</a>
+      <a href="{{ url_for('patients.view_patient', id=patient.id) }}" class="btn btn-secondary">Back to Patient</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

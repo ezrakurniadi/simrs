@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Create Room Class{% endblock %}
+
+{% block admin_breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('hospital.dashboard') }}">Hospital Management</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('hospital.list_room_classes') }}">Room Classes</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Create Room Class</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Create Room Class</h1>
+            
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control") }}
+                    {% for error in form.name.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                
+                <div class="form-group">
+                    {{ form.code.label(class="form-label") }}
+                    {{ form.code(class="form-control") }}
+                    {% for error in form.code.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                
+                <div class="form-group">
+                    {{ form.description.label(class="form-label") }}
+                    {{ form.description(class="form-control", rows="3") }}
+                    {% for error in form.description.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                                 
+                                 <div class="form-group">
+                                     {{ form.daily_rate.label(class="form-label") }}
+                                     {{ form.daily_rate(class="form-control") }}
+                                     {% for error in form.daily_rate.errors %}
+                                         <div class="text-danger">{{ error }}</div>
+                                     {% endfor %}
+                                 </div>
+                                 
+                                 <div class="form-group">
+                                     {{ form.care_level.label(class="form-label") }}
+                                     {{ form.care_level(class="form-control") }}
+                                     {% for error in form.care_level.errors %}
+                                         <div class="text-danger">{{ error }}</div>
+                                     {% endfor %}
+                                 </div>
+                                 
+                                 <div class="form-group">
+                                     {{ form.specialty.label(class="form-label") }}
+                                     {{ form.specialty(class="form-control") }}
+                                     {% for error in form.specialty.errors %}
+                                         <div class="text-danger">{{ error }}</div>
+                                     {% endfor %}
+                                 </div>
+                
+                <div class="form-group form-check">
+                    {{ form.is_active(class="form-check-input") }}
+                    {{ form.is_active.label(class="form-check-label") }}
+                </div>
+                
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-primary") }}
+                    <a href="{{ url_for('hospital.list_room_classes') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

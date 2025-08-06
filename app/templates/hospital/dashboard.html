@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Hospital Management{% endblock %}
+
+{% block admin_breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Hospital Management</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Hospital Management</h1>
+            <p>Manage hospital information and settings.</p>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Hospital Information</h5>
+                            {% if hospital %}
+                            <p><strong>Name:</strong> {{ hospital.name }}</p>
+                            <p><strong>Code:</strong> {{ hospital.code }}</p>
+                            <p><strong>Address:</strong> {{ hospital.address or 'Not set' }}</p>
+                            <p><strong>Phone:</strong> {{ hospital.phone or 'Not set' }}</p>
+                            <p><strong>Email:</strong> {{ hospital.email or 'Not set' }}</p>
+                            {% else %}
+                            <p>No hospital information has been set up yet.</p>
+                            {% endif %}
+                            <a href="{{ url_for('hospital.manage_settings') }}" class="btn btn-primary">Manage Settings</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Room Class Management</h5>
+                            <p class="card-text">Manage room classes for wards.</p>
+                            <a href="{{ url_for('hospital.list_room_classes') }}" class="btn btn-primary">Manage Room Classes</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Doctor Management</h5>
+                            <p class="card-text">Manage doctors and their schedules.</p>
+                            <a href="{{ url_for('hospital.list_doctors') }}" class="btn btn-primary">Manage Doctors</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Doctor Schedule Management</h5>
+                            <p class="card-text">Manage doctor schedules and availability.</p>
+                            <a href="{{ url_for('hospital.list_doctors') }}" class="btn btn-primary">Manage Doctor Schedules</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

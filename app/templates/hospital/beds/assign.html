@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Assign Bed{% endblock %}
+
+{% block admin_breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('hospital.dashboard') }}">Hospital Management</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('hospital.view_beds') }}">Bed Management</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Assign Bed</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Assign Patient to Bed</h1>
+            
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                
+                <div class="mb-3">
+                    {{ form.patient_id.label(class="form-label") }}
+                    {{ form.patient_id(class="form-select") }}
+                    {% for error in form.patient_id.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.bed_id.label(class="form-label") }}
+                    {{ form.bed_id(class="form-select") }}
+                    {% for error in form.bed_id.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.submit(class="btn btn-primary") }}
+                    <a href="{{ url_for('hospital.view_beds') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

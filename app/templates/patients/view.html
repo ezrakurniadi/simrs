@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Details{% endblock %}
+
+{% block nurse_breadcrumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('hospital.nurse_ward_dashboard') }}">Ward Dashboard</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Patient Details</li>
+  </ol>
+</nav>
+<div class="d-flex justify-content-end mb-3">
+  <a href="{{ url_for('hospital.nurse_ward_dashboard') }}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left"></i> Back to Ward Dashboard
+  </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<h1>Patient Details</h1>
+{% if current_user.has_role('Nurse') %}
+<div class="card mb-4 border-primary">
+  <div class="card-header bg-primary text-white">
+    <h3><i class="fas fa-bolt"></i> Nurse Quick Actions</h3>
+  </div>
+  <div class="card-body">
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{{ url_for('patients.add_vitals', patient_id=patient.id) }}" class="btn btn-primary">
+        <i class="fas fa-heartbeat"></i> Add Vital Signs
+      </a>
+      <a href="{{ url_for('patients.add_allergy', patient_id=patient.id) }}" class="btn btn-warning">
+        <i class="fas fa-allergies"></i> Add Allergy
+      </a>
+      <a href="{{ url_for('hospital.view_beds') }}" class="btn btn-info">
+        <i class="fas fa-bed"></i> View Bed Assignment
+      </a>
+      {% if is_admitted %}
+      <a href="{{ url_for('hospital.transfer_patient') }}?patient_id={{ patient.id }}" class="btn btn-secondary">
+        <i class="fas fa-exchange-alt"></i> Transfer Patient
+      </a>
+      <a href="{{ url_for('hospital.discharge_patient') }}?patient_id={{ patient.id }}" class="btn btn-danger">
+        <i class="fas fa-sign-out-alt"></i> Discharge Patient
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="card">
+  <div class="card-header">
+    <h2>{{ patient.first_name }} {{ patient.last_name }}</h2>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-6">
+        <p><strong>ID:</strong> {{ patient.id }}</p>
+        <p><strong>First Name:</strong> {{ patient.first_name }}</p>
+        <p><strong>Last Name:</strong> {{ patient.last_name }}</p>
+        <p><strong>Date of Birth:</strong> {{ patient.date_of_birth.strftime('%Y-%m-%d') if patient.date_of_birth else 'N/A' }}</p>
+        <p><strong>Gender:</strong> {{ patient.gender }}</p>
+      </div>
+      <div class="col-md-6">
+        <p><strong>Address:</strong> {{ patient.address or 'N/A' }}</p>
+        <p><strong>Phone:</strong> {{ patient.phone or 'N/A' }}</p>
+        <p><strong>Email:</strong> {{ patient.email or 'N/A' }}</p>
+        <p><strong>Created At:</strong> {{ patient.created_at.strftime('%Y-%m-%d %H:%M:%S') if patient.created_at else 'N/A' }}</p>
+        <p><strong>Updated At:</strong> {{ patient.updated_at.strftime('%Y-%m-%d %H:%M:%S') if patient.updated_at else 'N/A' }}</p>
+      </div>
+    </div>
+    
+    {% if patient.additional_data %}
+    <div class="row">
+      <div class="col-12">
+        <h3>Additional Data</h3>
+        <pre>{{ patient.additional_data | tojson(indent=2) }}</pre>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header">
+    <h3>Vital Signs</h3>
+  </div>
+  <div class="card-body">
+    {% if patient.vitals %}
+      {% set latest_vitals = patient.vitals | first %}
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Date:</strong> {{ latest_vitals.date.strftime('%Y-%m-%d %H:%M:%S') if latest_vitals.date else 'N/A' }}</p>
+          <p><strong>Blood Pressure:</strong> {{ latest_vitals.bp_systolic or 'N/A' }}/{{ latest_vitals.bp_diastolic or 'N/A' }} mmHg</p>
+          <p><strong>Heart Rate:</strong> {{ latest_vitals.heart_rate or 'N/A' }} bpm</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Temperature:</strong> {{ latest_vitals.temperature or 'N/A' }} °C</p>
+          <p><strong>Weight:</strong> {{ latest_vitals.weight or 'N/A' }} kg</p>
+          <p><strong>Height:</strong> {{ latest_vitals.height or 'N/A' }} cm</p>
+        </div>
+      </div>
+    {% else %}
+      <p>No vital signs recorded yet.</p>
+    {% endif %}
+    <a href="{{ url_for('patients.add_vitals', patient_id=patient.id) }}" class="btn btn-primary">Add Vital Signs</a>
+    <a href="{{ url_for('patients.view_vitals', patient_id=patient.id) }}" class="btn btn-secondary">View All Vital Signs</a>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header">
+    <h3>Clinical Notes</h3>
+  </div>
+  <div class="card-body">
+    {% if patient.clinical_notes %}
+      {% set latest_note = patient.clinical_notes | first %}
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Date:</strong> {{ latest_note.date.strftime('%Y-%m-%d %H:%M:%S') if latest_note.date else 'N/A' }}</p>
+          <p><strong>Note Type:</strong> {{ latest_note.note_type }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Written By:</strong> {{ latest_note.author.first_name }} {{ latest_note.author.last_name }}</p>
+        </div>
+      </div>
+      <p><strong>Content Preview:</strong> {{ latest_note.content[:100] }}{% if latest_note.content|length > 100 %}...{% endif %}</p>
+    {% else %}
+      <p>No clinical notes recorded yet.</p>
+    {% endif %}
+    <a href="{{ url_for('clinical_notes.add_clinical_note', patient_id=patient.id) }}" class="btn btn-primary">Add Clinical Note</a>
+    <a href="{{ url_for('clinical_notes.view_clinical_notes', patient_id=patient.id) }}" class="btn btn-secondary">View All Clinical Notes</a>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header">
+    <h3>Allergies</h3>
+  </div>
+  <div class="card-body">
+    {% if patient.allergies %}
+      {% set latest_allergy = patient.allergies | first %}
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Allergen:</strong> {{ latest_allergy.allergen }}</p>
+          <p><strong>Reaction:</strong> {{ latest_allergy.reaction }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Severity:</strong> {{ latest_allergy.severity }}</p>
+          <p><strong>Recorded Date:</strong> {{ latest_allergy.recorded_date.strftime('%Y-%m-%d %H:%M:%S') if latest_allergy.recorded_date else 'N/A' }}</p>
+        </div>
+      </div>
+    {% else %}
+      <p>No allergies recorded yet.</p>
+    {% endif %}
+    <a href="{{ url_for('patients.add_allergy', patient_id=patient.id) }}" class="btn btn-primary">Add Allergy</a>
+    <a href="{{ url_for('patients.view_allergies', patient_id=patient.id) }}" class="btn btn-secondary">View All Allergies</a>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header">
+    <h3>Medications</h3>
+  </div>
+  <div class="card-body">
+    {% if patient.medications %}
+      {% set latest_medication = patient.medications | first %}
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Drug Name:</strong> {{ latest_medication.drug_name }}</p>
+          <p><strong>Dosage:</strong> {{ latest_medication.dosage }}</p>
+          <p><strong>Frequency:</strong> {{ latest_medication.frequency }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Status:</strong> {{ latest_medication.status }}</p>
+          <p><strong>Start Date:</strong> {{ latest_medication.start_date.strftime('%Y-%m-%d') if latest_medication.start_date else 'N/A' }}</p>
+          <p><strong>End Date:</strong> {{ latest_medication.end_date.strftime('%Y-%m-%d') if latest_medication.end_date else 'N/A' }}</p>
+        </div>
+      </div>
+    {% else %}
+      <p>No medications prescribed yet.</p>
+    {% endif %}
+    <a href="{{ url_for('patients.prescribe_medication', patient_id=patient.id) }}" class="btn btn-primary">Prescribe Medication</a>
+    <a href="{{ url_for('patients.view_medications', patient_id=patient.id) }}" class="btn btn-secondary">View All Medications</a>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header">
+    <h3>Lab Tests</h3>
+  </div>
+  <div class="card-body">
+    {% if patient.lab_orders %}
+      {% set latest_lab_order = patient.lab_orders | first %}
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Test Type:</strong> {{ latest_lab_order.test_type }}</p>
+          <p><strong>Order Date:</strong> {{ latest_lab_order.order_date.strftime('%Y-%m-%d %H:%M:%S') if latest_lab_order.order_date else 'N/A' }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Status:</strong> {{ latest_lab_order.status }}</p>
+          <p><strong>Ordered By:</strong>
+            {% if latest_lab_order.orderer %}
+              Dr. {{ latest_lab_order.orderer.first_name }} {{ latest_lab_order.orderer.last_name }}
+            {% else %}
+              N/A
+            {% endif %}
+          </p>
+        </div>
+      </div>
+    {% else %}
+      <p>No lab tests ordered yet.</p>
+    {% endif %}
+    <a href="{{ url_for('lab.order_lab_test', patient_id=patient.id) }}" class="btn btn-primary">Order Lab Test</a>
+    <a href="{{ url_for('lab.view_patient_lab_results', patient_id=patient.id) }}" class="btn btn-info">View Lab Results</a>
+    <a href="{{ url_for('lab.view_lab_orders', patient_id=patient.id) }}" class="btn btn-secondary">View All Lab Tests</a>
+  </div>
+</div>
+
+<div class="mt-3">
+  <a href="{{ url_for('patients.index') }}" class="btn btn-secondary">Back to Patients</a>
+  <a href="{{ url_for('patients.edit_patient', id=patient.id) }}" class="btn btn-primary">Edit Patient</a>
+  <a href="{{ url_for('patients.view_encounters', patient_id=patient.id) }}" class="btn btn-info">View Chronological Encounters</a>
+</div>
+{% endblock %}

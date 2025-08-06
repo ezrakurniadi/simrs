@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Appointments Calendar{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Appointments Calendar</h2>
+    {% if current_user.is_authenticated and (current_user.has_role('Receptionist') or current_user.has_role('Doctor') or current_user.has_role('Admin')) %}
+    <a href="{{ url_for('appointments.create_appointment') }}" class="btn btn-primary">New Appointment</a>
+    {% endif %}
+</div>
+
+<div id="calendar"></div>
+{% endblock %}
+
+{% block scripts %}
+<!-- FullCalendar CSS -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+
+<!-- FullCalendar JS -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: function(fetchInfo, successCallback, failureCallback) {
+                fetch('/api/appointments/calendar')
+                    .then(response => response.json())
+                    .then(data => {
+                        successCallback(data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching events:', error);
+                        failureCallback(error);
+                    });
+            },
+            eventClick: function(info) {
+                // Redirect to appointment view page
+                window.location.href = '/appointments/' + info.event.extendedProps.appointment_id;
+            },
+            editable: false, // Disable editing in the calendar view
+            selectable: false // Disable creating events by clicking and dragging
+        });
+        
+        calendar.render();
+    });
+</script>
+{% endblock %}

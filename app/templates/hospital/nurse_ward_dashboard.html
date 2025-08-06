@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Ward Dashboard{% endblock %}
+
+{% block nurse_breadcrumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('nurse.dashboard') }}">Nurse Dashboard</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Ward Dashboard</li>
+  </ol>
+</nav>
+<div class="d-flex justify-content-end mb-3">
+  <a href="{{ url_for('nurse.dashboard') }}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left"></i> Back to Nurse Dashboard
+  </a>
+</div>
+{% endblock %}
+
+{% block admin_breadcrumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('hospital.dashboard') }}">Hospital Management</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Ward Dashboard</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Ward Dashboard</h1>
+            <p>View occupied beds and patient details organized by ward and room.</p>
+            
+            {% if ward_data %}
+                {% for ward_id, ward_info in ward_data.items() %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h2>Ward: {{ ward_info.ward_name }}</h2>
+                    </div>
+                    <div class="card-body">
+                        {% if ward_info.rooms %}
+                            {% for room_id, room_info in ward_info.rooms.items() %}
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h4>Room: {{ room_info.room_name }}</h4>
+                                </div>
+                                <div class="card-body">
+                                    {% if room_info.beds %}
+                                        <div class="row">
+                                            {% for bed in room_info.beds %}
+                                            <div class="col-md-6 col-lg-4 mb-3">
+                                                <div class="card border-danger">
+                                                    <div class="card-header bg-danger text-white">
+                                                        <strong>Bed: {{ bed.name }}</strong>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        {% if bed.patient %}
+                                                        <h5 class="card-title">{{ bed.patient.first_name }} {{ bed.patient.last_name }}</h5>
+                                                        <p class="card-text">
+                                                            <strong>Patient ID:</strong> {{ bed.patient.id }}<br>
+                                                            <strong>Date of Birth:</strong> {{ bed.patient.date_of_birth }}<br>
+                                                            <strong>Gender:</strong> {{ bed.patient.gender }}<br>
+                                                            <strong>Admission Date:</strong> {{ bed.patient.admission_date }}
+                                                        </p>
+                                                        <a href="{{ url_for('patients.view_patient', id=bed.patient.id) }}" class="btn btn-primary">View Patient Details</a>
+                                                        <a href="{{ url_for('hospital.transfer_patient') }}" class="btn btn-warning">Transfer Patient</a>
+                                                        <a href="{{ url_for('hospital.discharge_patient') }}" class="btn btn-danger">Discharge Patient</a>
+                                                        {% else %}
+                                                        <p class="card-text">No patient information available.</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <p>No occupied beds in this room.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>No rooms with occupied beds in this ward.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info">
+                    <p>No occupied beds found in any ward.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

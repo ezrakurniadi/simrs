@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Room Class Management{% endblock %}
+
+{% block admin_breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('hospital.dashboard') }}">Hospital Management</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Room Classes</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Room Class Management</h1>
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>Room Classes</h2>
+                <a href="{{ url_for('hospital.create_room_class') }}" class="btn btn-primary">Create New Room Class</a>
+            </div>
+            
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-info">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                                            <th>Name</th>
+                                            <th>Code</th>
+                                            <th>Description</th>
+                                            <th>Daily Rate</th>
+                                            <th>Care Level</th>
+                                            <th>Specialty</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                </thead>
+                <tbody>
+                    {% for room_class in room_classes %}
+                                        <tr>
+                                            <td>{{ room_class.name }}</td>
+                                            <td>{{ room_class.code }}</td>
+                                            <td>{{ room_class.description or '' }}</td>
+                                            <td>{{ room_class.daily_rate or '' }}</td>
+                                            <td>{{ room_class.care_level or '' }}</td>
+                                            <td>{{ room_class.specialty or '' }}</td>
+                                            <td>{{ 'Active' if room_class.is_active else 'Inactive' }}</td>
+                                            <td>
+                                                <a href="{{ url_for('hospital.edit_room_class', id=room_class.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                                <form method="POST" action="{{ url_for('hospital.delete_room_class', id=room_class.id) }}" style="display: inline;">
+                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this room class?')">Delete</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

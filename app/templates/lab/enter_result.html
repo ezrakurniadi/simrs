@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Enter Lab Results{% endblock %}
+
+{% block content %}
+<h1>Enter Lab Results</h1>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Patient: {{ patient.first_name }} {{ patient.last_name }}</h2>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-6">
+        <p><strong>Test Type:</strong> {{ lab_order.test_type }}</p>
+        <p><strong>Order Date:</strong> {{ lab_order.order_date.strftime('%Y-%m-%d %H:%M:%S') if lab_order.order_date else 'N/A' }}</p>
+        <p><strong>Status:</strong> {{ lab_order.status }}</p>
+      </div>
+      <div class="col-md-6">
+        <p><strong>Ordered By:</strong> 
+          {% if lab_order.orderer %}
+            Dr. {{ lab_order.orderer.first_name }} {{ lab_order.orderer.last_name }}
+          {% else %}
+            N/A
+          {% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header">
+    <h3>Enter Results</h3>
+  </div>
+  <div class="card-body">
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      
+      <div class="form-group">
+        {{ form.result_data.label(class="form-label") }}
+        {{ form.result_data(class="form-control", rows="10") }}
+        {% if form.result_data.errors %}
+          <div class="text-danger">
+            {% for error in form.result_data.errors %}
+              <small>{{ error }}</small>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      
+      <div class="form-group mt-3">
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('lab.technician_dashboard') }}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

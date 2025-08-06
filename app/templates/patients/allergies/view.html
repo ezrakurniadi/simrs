@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Allergies{% endblock %}
+
+{% block content %}
+<h1>{{ patient.first_name }} {{ patient.last_name }} - Allergies</h1>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Allergies</h2>
+  </div>
+  <div class="card-body">
+    {% if allergies %}
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Allergen</th>
+              <th>Reaction</th>
+              <th>Severity</th>
+              <th>Recorded Date</th>
+              <th>Recorded By</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for allergy in allergies %}
+            <tr>
+              <td>{{ allergy.allergen }}</td>
+              <td>{{ allergy.reaction }}</td>
+              <td>
+                {% if allergy.severity == 'Mild' %}
+                  <span class="badge bg-success">{{ allergy.severity }}</span>
+                {% elif allergy.severity == 'Moderate' %}
+                  <span class="badge bg-warning">{{ allergy.severity }}</span>
+                {% elif allergy.severity == 'Severe' %}
+                  <span class="badge bg-danger">{{ allergy.severity }}</span>
+                {% else %}
+                  <span class="badge bg-secondary">{{ allergy.severity }}</span>
+                {% endif %}
+              </td>
+              <td>{{ allergy.recorded_date.strftime('%Y-%m-%d %H:%M:%S') if allergy.recorded_date else 'N/A' }}</td>
+              <td>{{ allergy.recorder.first_name }} {{ allergy.recorder.last_name }}</td>
+              <td>
+                <a href="{{ url_for('patients.edit_allergy', patient_id=patient.id, allergy_id=allergy.id) }}" class="btn btn-sm btn-primary">Edit</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p>No allergies recorded yet.</p>
+    {% endif %}
+    
+    <a href="{{ url_for('patients.add_allergy', patient_id=patient.id) }}" class="btn btn-primary">Add Allergy</a>
+    <a href="{{ url_for('patients.view_patient', id=patient.id) }}" class="btn btn-secondary">Back to Patient</a>
+  </div>
+</div>
+{% endblock %}

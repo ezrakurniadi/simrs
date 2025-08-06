@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Doctor Management{% endblock %}
+
+{% block admin_breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('hospital.dashboard') }}">Hospital Management</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Doctors</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Doctor Management</h1>
+            <p>Manage doctors and their schedules.</p>
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>Doctors</h2>
+                <a href="{{ url_for('hospital.create_doctor') }}" class="btn btn-primary">Add New Doctor</a>
+            </div>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Doctor Name</th>
+                            <th>Hospital</th>
+                            <th>Specialization</th>
+                            <th>License Number</th>
+                            <th>Years of Experience</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for doctor in doctors %}
+                        <tr>
+                            <td>{{ doctor.user.first_name }} {{ doctor.user.last_name }}</td>
+                            <td>{{ doctor.hospital.name if doctor.hospital else 'N/A' }}</td>
+                            <td>{{ doctor.specialization or 'N/A' }}</td>
+                            <td>{{ doctor.license_number or 'N/A' }}</td>
+                            <td>{{ doctor.experience_years or 'N/A' }}</td>
+                            <td>
+                                {% if doctor.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('hospital.edit_doctor', id=doctor.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                <a href="{{ url_for('hospital.list_doctor_schedules', doctor_id=doctor.id) }}" class="btn btn-sm btn-info">Schedules</a>
+                                <form method="POST" action="{{ url_for('hospital.delete_doctor', id=doctor.id) }}" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this doctor?')">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center">No doctors found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

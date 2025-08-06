@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Patient{% endblock %}
+
+{% block content %}
+<h1>Edit Patient</h1>
+
+<p>This page will allow editing of patient information.</p>
+
+<a href="{{ url_for('patients.index') }}" class="btn btn-secondary">Back to Patients</a>
+{% endblock %}

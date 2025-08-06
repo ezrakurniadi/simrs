@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}Bed Availability{% endblock %}
+
+{% block nurse_breadcrumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('hospital.nurse_ward_dashboard') }}">Ward Dashboard</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Bed Management</li>
+  </ol>
+</nav>
+<div class="d-flex justify-content-end mb-3">
+  <a href="{{ url_for('hospital.nurse_ward_dashboard') }}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left"></i> Back to Ward Dashboard
+  </a>
+</div>
+{% endblock %}
+
+{% block admin_breadcrumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('hospital.dashboard') }}">Hospital Management</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Bed Management</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block head %}
+<style>
+    .bed-badge {
+        font-size: 0.9em;
+        margin: 2px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px 10px;
+    }
+    .bed-badge .bed-name {
+        margin-right: 5px;
+    }
+    .bed-badge .bed-actions {
+        margin-left: 5px;
+    }
+    .bed-badge .btn {
+        padding: 2px 5px;
+        font-size: 0.8em;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Bed Availability</h1>
+                        
+            <div class="mb-3">
+                <a href="{{ url_for('hospital.assign_bed') }}" class="btn btn-primary">Assign Patient to Bed</a>
+            </div>
+            
+            <div class="mb-3">
+                <label for="wardFilter" class="form-label">Filter by Ward:</label>
+                <select class="form-select" id="wardFilter" onchange="filterBeds()">
+                    <option value="">All Wards</option>
+                    {% for ward in wards %}
+                    <option value="{{ ward.id }}">{{ ward.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="roomClassFilter" class="form-label">Filter by Room Class:</label>
+                <select class="form-select" id="roomClassFilter" onchange="filterBeds()">
+                    <option value="">All Room Classes</option>
+                    {% for room_class in room_classes %}
+                    <option value="{{ room_class.id }}">{{ room_class.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            {% for ward_id, ward_data in bed_data.items() %}
+            <div class="card mb-4 ward-card" data-ward-id="{{ ward_id }}">
+                <div class="card-header">
+                    <h2>Ward: {{ ward_data.ward.name }}</h2>
+                </div>
+                <div class="card-body">
+                    {% for room_class_id, class_data in ward_data.room_classes.items() %}
+                    <div class="card mb-3 room-class-card" data-room-class-id="{{ room_class_id }}">
+                        <div class="card-header">
+                            <h4>Room Class: {{ class_data.room_class.name }}</h4>
+                        </div>
+                        <div class="card-body">
+                            {% if class_data.rooms %}
+                                {% for room_data in class_data.rooms %}
+                                <div class="mb-3">
+                                    <h5>Room: {{ room_data.ward_room.name }} (Capacity: {{ room_data.ward_room.capacity }})</h5>
+                                    <div class="d-flex flex-wrap">
+                                                                            {% for bed in room_data.beds %}
+                                                                            <span class="bed-badge badge {% if bed.is_occupied %}bg-danger{% else %}bg-success{% endif %} m-1">
+                                                                                <span class="bed-name">{{ bed.name }}</span>
+                                                                                {% if bed.is_occupied %}
+                                                                                    {% set admission = bed.admissions | selectattr('status', 'equalto', 'Admitted') | first %}
+                                                                                    {% if admission %}
+                                                                                        <span class="bed-patient">({{ admission.patient.first_name }} {{ admission.patient.last_name }})</span>
+                                                                                        <span class="bed-actions">
+                                                                                            <form method="POST" action="{{ url_for('hospital.unassign_bed', bed_id=bed.id) }}" style="display: inline;">
+                                                                                                <button type="submit" class="btn btn-sm btn-light" onclick="return confirm('Are you sure you want to unassign this patient from the bed?')">Unassign</button>
+                                                                                            </form>
+                                                                                        </span>
+                                                                                    {% else %}
+                                                                                        <span class="bed-status">(Occupied)</span>
+                                                                                    {% endif %}
+                                                                                {% else %}
+                                                                                    <span class="bed-status">(Available)</span>
+                                                                                {% endif %}
+                                                                            </span>
+                                                                            {% endfor %}
+                                                                        </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <p>No rooms found for this room class in this ward.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function filterBeds() {
+        const selectedWard = document.getElementById('wardFilter').value;
+        const selectedRoomClass = document.getElementById('roomClassFilter').value;
+
+        document.querySelectorAll('.ward-card').forEach(wardCard => {
+            const wardId = wardCard.dataset.wardId;
+            let showWard = true;
+
+            if (selectedWard && selectedWard !== wardId) {
+                showWard = false;
+            }
+
+            wardCard.style.display = showWard ? '' : 'none';
+
+            if (showWard) {
+                wardCard.querySelectorAll('.room-class-card').forEach(roomClassCard => {
+                    const roomClassId = roomClassCard.dataset.roomClassId;
+                    let showRoomClass = true;
+
+                    if (selectedRoomClass && selectedRoomClass !== roomClassId) {
+                        showRoomClass = false;
+                    }
+                    roomClassCard.style.display = showRoomClass ? '' : 'none';
+                });
+            }
+        });
+    }
+</script>
+{% endblock %}

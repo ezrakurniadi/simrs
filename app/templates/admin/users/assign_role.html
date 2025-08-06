@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Assign Role{% endblock %}
+
+{% block admin_breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('admin.list_users') }}">Users</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Assign Role</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Assign Role</h1>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2>User: {{ user.username }}</h2>
+                </div>
+                <div class="card-body">
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                    
+                    <h3>Current Roles</h3>
+                    {% if user.roles %}
+                        <ul class="list-group mb-3">
+                            {% for role in user.roles %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ role.name }}
+                                    <span class="badge badge-secondary">{{ role.description or 'No description' }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No roles currently assigned.</p>
+                    {% endif %}
+                    
+                    <h3>Assign New Role</h3>
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="form-group">
+                            {{ form.role_id.label(class="form-label") }}
+                            {{ form.role_id(class="form-control") }}
+                            {% for error in form.role_id.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.submit(class="btn btn-primary") }}
+                            <a href="{{ url_for('admin.view_user', id=user.id) }}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

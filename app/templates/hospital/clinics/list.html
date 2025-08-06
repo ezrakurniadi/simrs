@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Clinic Management{% endblock %}
+
+{% block admin_breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('hospital.dashboard') }}">Hospital Management</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Clinics</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Clinic Management</h1>
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>Clinics</h2>
+                <a href="{{ url_for('hospital.create_clinic') }}" class="btn btn-primary">Create New Clinic</a>
+            </div>
+            
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-info">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Code</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for clinic in clinics %}
+                    <tr>
+                        <td>{{ clinic.name }}</td>
+                        <td>{{ clinic.code }}</td>
+                        <td>{{ clinic.description or '' }}</td>
+                        <td>{{ 'Active' if clinic.is_active else 'Inactive' }}</td>
+                        <td>
+                            <a href="{{ url_for('hospital.edit_clinic', id=clinic.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                            <form method="POST" action="{{ url_for('hospital.delete_clinic', id=clinic.id) }}" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this clinic?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

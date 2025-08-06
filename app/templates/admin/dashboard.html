@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block admin_breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Admin Dashboard</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Admin Dashboard</h1>
+            <p>Welcome to the admin dashboard. Here you can manage users, roles, and other system settings.</p>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">User Management</h5>
+                            <p class="card-text">Manage system users and their roles.</p>
+                            <a href="{{ url_for('admin.list_users') }}" class="btn btn-primary">Manage Users</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Role Management</h5>
+                            <p class="card-text">Manage system roles and permissions.</p>
+                            <a href="{{ url_for('admin.list_roles') }}" class="btn btn-primary">Manage Roles</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">System Parameters</h5>
+                            <p class="card-text">Manage application settings and configurations.</p>
+                            <a href="{{ url_for('system_params.dashboard') }}" class="btn btn-primary">Manage Parameters</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Hospital Management</h5>
+                            <p class="card-text">Manage hospital information and settings.</p>
+                            <a href="{{ url_for('hospital.dashboard') }}" class="btn btn-primary">Manage Hospital</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Clinic Management</h5>
+                            <p class="card-text">Manage outpatient clinics.</p>
+                            <a href="{{ url_for('hospital.list_clinics') }}" class="btn btn-primary">Manage Clinics</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ward Management</h5>
+                            <p class="card-text">Manage inpatient wards.</p>
+                            <a href="{{ url_for('hospital.list_wards') }}" class="btn btn-primary">Manage Wards</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Room Class Management</h5>
+                            <p class="card-text">Manage room classes for wards.</p>
+                            <a href="{{ url_for('hospital.list_room_classes') }}" class="btn btn-primary">Manage Room Classes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

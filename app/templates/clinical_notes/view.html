@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Clinical Notes{% endblock %}
+
+{% block content %}
+<h1>Clinical Notes for {{ patient.first_name }} {{ patient.last_name }}</h1>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Patient Information</h2>
+  </div>
+  <div class="card-body">
+    <p><strong>ID:</strong> {{ patient.id }}</p>
+    <p><strong>Name:</strong> {{ patient.first_name }} {{ patient.last_name }}</p>
+    <p><strong>Date of Birth:</strong> {{ patient.date_of_birth.strftime('%Y-%m-%d') if patient.date_of_birth else 'N/A' }}</p>
+    <p><strong>Gender:</strong> {{ patient.gender }}</p>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header">
+    <h2>All Clinical Notes</h2>
+  </div>
+  <div class="card-body">
+    {% if clinical_notes %}
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Note Type</th>
+              <th>Written By</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for note in clinical_notes %}
+            <tr>
+              <td>{{ note.date.strftime('%Y-%m-%d %H:%M:%S') if note.date else 'N/A' }}</td>
+              <td>{{ note.note_type }}</td>
+              <td>{{ note.author.first_name }} {{ note.author.last_name }}</td>
+              <td>
+                <a href="{{ url_for('clinical_notes.view_clinical_note', patient_id=patient.id, note_id=note.id) }}" class="btn btn-sm btn-primary">View</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p>No clinical notes recorded yet.</p>
+    {% endif %}
+    
+    <div class="mt-3">
+      <a href="{{ url_for('clinical_notes.add_clinical_note', patient_id=patient.id) }}" class="btn btn-primary">Add Clinical Note</a>
+      <a href="{{ url_for('patients.view_patient', id=patient.id) }}" class="btn btn-secondary">Back to Patient</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

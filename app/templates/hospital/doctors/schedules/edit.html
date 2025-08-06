@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Schedule{% endblock %}
+
+{% block admin_breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('hospital.dashboard') }}">Hospital Management</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('hospital.list_doctors') }}">Doctors</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('hospital.list_doctor_schedules', doctor_id=schedule.doctor_id) }}">Schedules</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Edit Schedule</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Edit Schedule</h1>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.doctor_id.label(class="form-label") }}
+                                    {{ form.doctor_id(class="form-select") }}
+                                    {% if form.doctor_id.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.doctor_id.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.clinic_id.label(class="form-label") }}
+                                    {{ form.clinic_id(class="form-select") }}
+                                    {% if form.clinic_id.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.clinic_id.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.day_of_week.label(class="form-label") }}
+                                    {{ form.day_of_week(class="form-select") }}
+                                    {% if form.day_of_week.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.day_of_week.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.is_active.label(class="form-label") }}
+                                    {{ form.is_active(class="form-check-input") }}
+                                    {{ form.is_active.label(class="form-check-label") }}
+                                    {% if form.is_active.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.is_active.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.start_time.label(class="form-label") }}
+                                    {{ form.start_time(class="form-control") }}
+                                    {% if form.start_time.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.start_time.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.end_time.label(class="form-label") }}
+                                    {{ form.end_time(class="form-control") }}
+                                    {% if form.end_time.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.end_time.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.slot_duration.label(class="form-label") }}
+                                    {{ form.slot_duration(class="form-control") }}
+                                    {% if form.slot_duration.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.slot_duration.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.max_patients.label(class="form-label") }}
+                                    {{ form.max_patients(class="form-control") }}
+                                    {% if form.max_patients.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.max_patients.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('hospital.list_doctor_schedules', doctor_id=schedule.doctor_id) }}" class="btn btn-secondary">Cancel</a>
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

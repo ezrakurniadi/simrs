@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Book New Appointment{% endblock %}
+
+{% block content %}
+<h1>Book New Appointment</h1>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.patient_id.label(class="form-label") }}
+                {{ form.patient_id(class="form-select") }}
+                {% if form.patient_id.errors %}
+                    <div class="text-danger">
+                        {% for error in form.patient_id.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.doctor_id.label(class="form-label") }}
+                {{ form.doctor_id(class="form-select") }}
+                {% if form.doctor_id.errors %}
+                    <div class="text-danger">
+                        {% for error in form.doctor_id.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.scheduled_time.label(class="form-label") }}
+                {{ form.scheduled_time(class="form-control") }}
+                {% if form.scheduled_time.errors %}
+                    <div class="text-danger">
+                        {% for error in form.scheduled_time.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.duration.label(class="form-label") }}
+                {{ form.duration(class="form-control") }}
+                {% if form.duration.errors %}
+                    <div class="text-danger">
+                        {% for error in form.duration.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.room_id.label(class="form-label") }}
+                {{ form.room_id(class="form-select") }}
+                {% if form.room_id.errors %}
+                    <div class="text-danger">
+                        {% for error in form.room_id.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.status.label(class="form-label") }}
+                {{ form.status(class="form-select") }}
+                {% if form.status.errors %}
+                    <div class="text-danger">
+                        {% for error in form.status.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="mb-3">
+        {{ form.notes.label(class="form-label") }}
+        {{ form.notes(class="form-control", rows="4") }}
+        {% if form.notes.errors %}
+            <div class="text-danger">
+                {% for error in form.notes.errors %}
+                    <small>{{ error }}</small>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="mb-3">
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('appointments.list_appointments') }}" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+{% endblock %}

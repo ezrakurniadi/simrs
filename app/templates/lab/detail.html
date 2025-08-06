@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Lab Order Details{% endblock %}
+
+{% block content %}
+<h1>Lab Order Details</h1>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Patient: {{ patient.first_name }} {{ patient.last_name }}</h2>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-6">
+        <p><strong>Test Type:</strong> {{ lab_order.test_type }}</p>
+        <p><strong>Order Date:</strong> {{ lab_order.order_date.strftime('%Y-%m-%d %H:%M:%S') if lab_order.order_date else 'N/A' }}</p>
+        <p><strong>Status:</strong> {{ lab_order.status }}</p>
+      </div>
+      <div class="col-md-6">
+        <p><strong>Ordered By:</strong>
+          {% if lab_order.orderer %}
+            Dr. {{ lab_order.orderer.first_name }} {{ lab_order.orderer.last_name }}
+          {% else %}
+            N/A
+          {% endif %}
+        </p>
+        <p><strong>Created At:</strong> {{ lab_order.created_at.strftime('%Y-%m-%d %H:%M:%S') if lab_order.created_at else 'N/A' }}</p>
+        <p><strong>Updated At:</strong> {{ lab_order.updated_at.strftime('%Y-%m-%d %H:%M:%S') if lab_order.updated_at else 'N/A' }}</p>
+      </div>
+    </div>
+    
+    {% if lab_order.lab_results %}
+      <div class="mt-4">
+        <h3>Lab Results</h3>
+        {% for result in lab_order.lab_results %}
+          <div class="card mt-2">
+            <div class="card-body">
+              <p><strong>Performed By:</strong>
+                {% if result.performer %}
+                  {{ result.performer.first_name }} {{ result.performer.last_name }}
+                {% else %}
+                  N/A
+                {% endif %}
+              </p>
+              <p><strong>Result Date:</strong> {{ result.result_date.strftime('%Y-%m-%d %H:%M:%S') if result.result_date else 'N/A' }}</p>
+              <p><strong>Result Data:</strong></p>
+              <pre>{{ result.result_data }}</pre>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="mt-4">
+        <h3>Lab Results</h3>
+        <p>No results available yet.</p>
+        {% if lab_order.status == 'Ordered' %}
+          <a href="{{ url_for('lab.enter_lab_result', patient_id=patient.id, order_id=lab_order.id) }}" class="btn btn-primary">Enter Results</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="mt-3">
+  <a href="{{ url_for('lab.view_lab_orders', patient_id=patient.id) }}" class="btn btn-secondary">Back to Lab Orders</a>
+  <a href="{{ url_for('patients.view_patient', id=patient.id) }}" class="btn btn-secondary">Back to Patient</a>
+</div>
+{% endblock %}

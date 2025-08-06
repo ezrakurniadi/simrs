@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+
+{% block title %}Nurse Dashboard{% endblock %}
+
+{% block nurse_breadcrumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('patients.index') }}">Main Dashboard</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Nurse Dashboard</li>
+  </ol>
+</nav>
+<div class="d-flex justify-content-end mb-3">
+  <a href="{{ url_for('patients.index') }}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left"></i> Back to Main Dashboard
+  </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Nurse Dashboard</h1>
+            <p>Welcome, {{ current_user.first_name }} {{ current_user.last_name }}!</p>
+            
+            <!-- Quick Access Toolbar -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Quick Access</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-2 mb-3">
+                                    <a href="{{ url_for('patients.list_patients') }}" class="btn btn-primary w-100">
+                                        <i class="fas fa-heartbeat"></i> Add Vital Signs
+                                    </a>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <a href="{{ url_for('patients.list_patients') }}" class="btn btn-primary w-100">
+                                        <i class="fas fa-allergies"></i> Add Allergies
+                                    </a>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <a href="{{ url_for('hospital.view_beds') }}" class="btn btn-primary w-100">
+                                        <i class="fas fa-bed"></i> View Bed Availability
+                                    </a>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <a href="{{ url_for('hospital.transfer_patient') }}" class="btn btn-primary w-100">
+                                        <i class="fas fa-exchange-alt"></i> Transfer Patient
+                                    </a>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <a href="{{ url_for('hospital.discharge_patient') }}" class="btn btn-primary w-100">
+                                        <i class="fas fa-sign-out-alt"></i> Discharge Patient
+                                    </a>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <a href="{{ url_for('patients.list_patients') }}" class="btn btn-primary w-100">
+                                        <i class="fas fa-users"></i> View Patient List
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bed Availability Summary -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Bed Availability</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-md-4">
+                                    <div class="alert alert-info">
+                                        <h3>{{ total_beds }}</h3>
+                                        <p>Total Beds</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="alert alert-warning">
+                                        <h3>{{ occupied_beds }}</h3>
+                                        <p>Occupied Beds</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="alert alert-success">
+                                        <h3>{{ available_beds }}</h3>
+                                        <p>Available Beds</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Today's Appointments Summary -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Today's Appointments ({{ today.strftime('%Y-%m-%d') }})</h2>
+                        </div>
+                        <div class="card-body">
+                            {% if today_appointments %}
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>Patient</th>
+                                            <th>Doctor</th>
+                                            <th>Duration</th>
+                                            <th>Room</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for appointment in today_appointments %}
+                                        <tr>
+                                            <td>{{ appointment.scheduled_time.strftime('%H:%M') }}</td>
+                                            <td>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</td>
+                                            <td>Dr. {{ appointment.doctor.first_name }} {{ appointment.doctor.last_name }}</td>
+                                            <td>{{ appointment.duration }} minutes</td>
+                                            <td>{{ appointment.room.name if appointment.room else 'Not assigned' }}</td>
+                                            <td>{{ appointment.status }}</td>
+                                            <td>
+                                                <a href="{{ url_for('appointments.view_appointment', id=appointment.id) }}" class="btn btn-sm btn-info">View</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p>No appointments scheduled for today.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Patient Encounters -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Recent Vital Signs Recordings</h2>
+                        </div>
+                        <div class="card-body">
+                            {% if recent_encounters %}
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Patient</th>
+                                            <th>Recorded By</th>
+                                            <th>BP</th>
+                                            <th>HR</th>
+                                            <th>Temp</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for encounter in recent_encounters %}
+                                        <tr>
+                                            <td>{{ encounter.date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                            <td>{{ encounter.patient.first_name }} {{ encounter.patient.last_name }}</td>
+                                            <td>{{ encounter.recorder.first_name }} {{ encounter.recorder.last_name }}</td>
+                                            <td>{{ encounter.bp_systolic }}/{{ encounter.bp_diastolic }}</td>
+                                            <td>{{ encounter.heart_rate }} bpm</td>
+                                            <td>{{ encounter.temperature }} °C</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p>No recent vital signs recordings.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Admissions -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Recent Admissions</h2>
+                        </div>
+                        <div class="card-body">
+                            {% if recent_admissions %}
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Patient</th>
+                                            <th>Ward</th>
+                                            <th>Bed</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for admission in recent_admissions %}
+                                        <tr>
+                                            <td>{{ admission.admission_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                            <td>{{ admission.patient.first_name }} {{ admission.patient.last_name }}</td>
+                                            <td>{{ admission.ward.name if admission.ward else 'N/A' }}</td>
+                                            <td>{{ admission.bed.name if admission.bed else 'N/A' }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p>No recent admissions.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- Ward and Bed Information -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Ward and Bed Information</h2>
+                </div>
+                <div class="card-body">
+                    {% if ward_data %}
+                    <div class="accordion" id="wardAccordion">
+                        {% for ward_id, ward in ward_data.items() %}
+                        <div class="card">
+                            <div class="card-header" id="heading{{ ward_id }}">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse{{ ward_id }}" aria-expanded="true" aria-controls="collapse{{ ward_id }}">
+                                        {{ ward.name }}
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="collapse{{ ward_id }}" class="collapse" aria-labelledby="heading{{ ward_id }}" data-parent="#wardAccordion">
+                                <div class="card-body">
+                                    {% for room_id, room in ward.rooms.items() %}
+                                    <div class="card mb-3">
+                                        <div class="card-header">
+                                            {{ room.name }}
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                {% for bed in room.beds %}
+                                                <div class="col-md-3 mb-3">
+                                                    <div class="card">
+                                                        <div class="card-header">
+                                                            {{ bed.name }}
+                                                        </div>
+                                                        <div class="card-body">
+                                                            {% if bed.patient %}
+                                                            <p><strong>Patient:</strong> {{ bed.patient.first_name }} {{ bed.patient.last_name }}</p>
+                                                            <p><strong>Admission Date:</strong> {{ bed.patient.admission_date.strftime('%Y-%m-%d') }}</p>
+                                                            {% else %}
+                                                            <p><strong>Status:</strong> Available</p>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p>No ward data available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}
