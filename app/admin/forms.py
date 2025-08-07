@@ -13,6 +13,7 @@ class UserRoleForm(FlaskForm):
 
 class RemoveRoleForm(FlaskForm):
     role_id = SelectField('Role to Remove', validators=[DataRequired()], coerce=str)
+    submit = SubmitField('Remove Role')
 
 class UserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=4, max=20)])
@@ -21,4 +22,3 @@ class UserForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
     submit = SubmitField('Save User')
-    submit = SubmitField('Remove Role')

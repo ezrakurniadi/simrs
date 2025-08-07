@@ -5,7 +5,7 @@
 {% block content %}
 <h1>Register New Patient</h1>
 
-<form method="POST">
+<form method="POST" action="{{ url_for('patients.create_patient') }}">
     {{ form.hidden_tag() }}
     
     <div class="row">
@@ -107,6 +107,250 @@
         </div>
     </div>
     
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.id_type.label(class="form-label") }}
+                {{ form.id_type(class="form-control") }}
+                {% if form.id_type.errors %}
+                    <div class="text-danger">
+                        {% for error in form.id_type.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.id_card_number.label(class="form-label") }}
+                {{ form.id_card_number(class="form-control") }}
+                {% if form.id_card_number.errors %}
+                    <div class="text-danger">
+                        {% for error in form.id_card_number.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.blood_type.label(class="form-label") }}
+                {{ form.blood_type(class="form-control") }}
+                {% if form.blood_type.errors %}
+                    <div class="text-danger">
+                        {% for error in form.blood_type.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.birthplace.label(class="form-label") }}
+                {{ form.birthplace(class="form-control") }}
+                {% if form.birthplace.errors %}
+                    <div class="text-danger">
+                        {% for error in form.birthplace.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.marriage_status.label(class="form-label") }}
+                {{ form.marriage_status(class="form-control") }}
+                {% if form.marriage_status.errors %}
+                    <div class="text-danger">
+                        {% for error in form.marriage_status.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.nationality_id.label(class="form-label") }}
+                {{ form.nationality_id(class="form-control") }}
+                {% if form.nationality_id.errors %}
+                    <div class="text-danger">
+                        {% for error in form.nationality_id.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.vip_status.label(class="form-label") }}
+                {{ form.vip_status(class="form-control") }}
+                {% if form.vip_status.errors %}
+                    <div class="text-danger">
+                        {% for error in form.vip_status.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.problematic_patient.label(class="form-label") }}
+                {{ form.problematic_patient(class="form-control") }}
+                {% if form.problematic_patient.errors %}
+                    <div class="text-danger">
+                        {% for error in form.problematic_patient.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.loyalty_member.label(class="form-label") }}
+                {{ form.loyalty_member(class="form-control") }}
+                {% if form.loyalty_member.errors %}
+                    <div class="text-danger">
+                        {% for error in form.loyalty_member.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.ihs_number.label(class="form-label") }}
+                {{ form.ihs_number(class="form-control") }}
+                {% if form.ihs_number.errors %}
+                    <div class="text-danger">
+                        {% for error in form.ihs_number.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.chronic_condition.label(class="form-label") }}
+                {{ form.chronic_condition(class="form-control") }}
+                {% if form.chronic_condition.errors %}
+                    <div class="text-danger">
+                        {% for error in form.chronic_condition.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.allergy_alert.label(class="form-label") }}
+                {{ form.allergy_alert(class="form-control") }}
+                {% if form.allergy_alert.errors %}
+                    <div class="text-danger">
+                        {% for error in form.allergy_alert.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.preferred_communication.label(class="form-label") }}
+                {{ form.preferred_communication(class="form-control") }}
+                {% if form.preferred_communication.errors %}
+                    <div class="text-danger">
+                        {% for error in form.preferred_communication.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.preferred_language.label(class="form-label") }}
+                {{ form.preferred_language(class="form-control") }}
+                {% if form.preferred_language.errors %}
+                    <div class="text-danger">
+                        {% for error in form.preferred_language.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.emergency_contact_name.label(class="form-label") }}
+                {{ form.emergency_contact_name(class="form-control") }}
+                {% if form.emergency_contact_name.errors %}
+                    <div class="text-danger">
+                        {% for error in form.emergency_contact_name.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form.emergency_contact_phone.label(class="form-label") }}
+                {{ form.emergency_contact_phone(class="form-control") }}
+                {% if form.emergency_contact_phone.errors %}
+                    <div class="text-danger">
+                        {% for error in form.emergency_contact_phone.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        {{ form.emergency_contact_relationship.label(class="form-label") }}
+        {{ form.emergency_contact_relationship(class="form-control") }}
+        {% if form.emergency_contact_relationship.errors %}
+            <div class="text-danger">
+                {% for error in form.emergency_contact_relationship.errors %}
+                    <small>{{ error }}</small>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
     <div class="mb-3">
         {{ form.submit(class="btn btn-primary") }}
         <a href="{{ url_for('patients.index') }}" class="btn btn-secondary">Cancel</a>

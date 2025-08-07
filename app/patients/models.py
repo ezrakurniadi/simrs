@@ -1,88 +1,110 @@
-import uuid
-from sqlalchemy.dialects.postgresql import JSONB
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-from app.auth.models import User, Patient
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+from app import db
+import uuid
+from app.system_params.models import Nationality
 
-db = SQLAlchemy()
+class Patient(db.Model):
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    date_of_birth = db.Column(db.Date, nullable=False)
+    gender = db.Column(db.String(10), nullable=False)
+    address = db.Column(db.String(255), nullable=True)
+    phone = db.Column(db.String(20), nullable=True)
+    email = db.Column(db.String(120), unique=True, nullable=True)
+    id_type = db.Column(db.String(50), nullable=True)
+    id_card_number = db.Column(db.String(50), nullable=True)
+    blood_type = db.Column(db.String(5), nullable=True)
+    birthplace = db.Column(db.String(100), nullable=True)
+    marriage_status = db.Column(db.String(20), nullable=True)
+    nationality_id = db.Column(db.String(36), db.ForeignKey('nationality.id'), nullable=True)
+    vip_status = db.Column(db.Boolean, default=False)
+    problematic_patient = db.Column(db.Boolean, default=False)
+    loyalty_member = db.Column(db.Boolean, default=False)
+    ihs_number = db.Column(db.String(50), nullable=True)
+    chronic_condition = db.Column(db.Boolean, default=False)
+    allergy_alert = db.Column(db.Boolean, default=False)
+    preferred_communication = db.Column(db.String(50), nullable=True)
+    preferred_language = db.Column(db.String(50), nullable=True)
+    emergency_contact_name = db.Column(db.String(100), nullable=True)
+    emergency_contact_phone = db.Column(db.String(20), nullable=True)
+    emergency_contact_relationship = db.Column(db.String(50), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_by = db.Column(db.String(50), nullable=True)
+
+    nationality = db.relationship('Nationality', backref=db.backref('patients', lazy=True))
+
+    def __repr__(self):
+        return f'<Patient {self.first_name} {self.last_name}>'
 
 class Vitals(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     patient_id = db.Column(db.String(36), db.ForeignKey('patient.id'), nullable=False)
-    recorded_by = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
-    date = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
-    bp_systolic = db.Column(db.Integer)
-    bp_diastolic = db.Column(db.Integer)
-    heart_rate = db.Column(db.Integer)
-    temperature = db.Column(db.Float)
-    weight = db.Column(db.Float)
-    height = db.Column(db.Float)
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
-    
-    # Relationships
-    patient = db.relationship('Patient', backref=db.backref('vitals', lazy=True))
-    recorder = db.relationship('User', backref=db.backref('recorded_vitals', lazy=True))
+    recorded_by = db.Column(db.String(50), nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    bp_systolic = db.Column(db.Integer, nullable=False)
+    bp_diastolic = db.Column(db.Integer, nullable=False)
+    heart_rate = db.Column(db.Integer, nullable=False)
+    temperature = db.Column(db.Float, nullable=False)
+    weight = db.Column(db.Float, nullable=False)
+    height = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return f'<Vitals for Patient {self.patient_id} recorded on {self.date}>'
 
 class Allergy(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     patient_id = db.Column(db.String(36), db.ForeignKey('patient.id'), nullable=False)
     allergen = db.Column(db.String(100), nullable=False)
-    reaction = db.Column(db.Text, nullable=False)
-    severity = db.Column(db.String(20), nullable=False)  # Mild, Moderate, Severe
-    recorded_date = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
-    recorded_by = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
-    
-    # Relationships
-    patient = db.relationship('Patient', backref=db.backref('allergies', lazy=True))
-    recorder = db.relationship('User', backref=db.backref('recorded_allergies', lazy=True))
+    reaction = db.Column(db.String(255), nullable=False)
+    severity = db.Column(db.String(50), nullable=False)
+    recorded_date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    recorded_by = db.Column(db.String(50), nullable=False)
+
+    def __repr__(self):
+        return f'<Allergy for Patient {self.patient_id}: {self.allergen}>'
 
 class Medication(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     patient_id = db.Column(db.String(36), db.ForeignKey('patient.id'), nullable=False)
-    prescribed_by = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
+    prescribed_by = db.Column(db.String(50), nullable=False)
     drug_name = db.Column(db.String(100), nullable=False)
     dosage = db.Column(db.String(50), nullable=False)
     frequency = db.Column(db.String(50), nullable=False)
     start_date = db.Column(db.Date, nullable=False)
-    end_date = db.Column(db.Date)
-    status = db.Column(db.String(20), default='Active')  # Active, Completed, Discontinued
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
-    
-    # Relationships
-    patient = db.relationship('Patient', backref=db.backref('medications', lazy=True))
-    prescriber = db.relationship('User', backref=db.backref('prescribed_medications', lazy=True))
+    end_date = db.Column(db.Date, nullable=True)
+    status = db.Column(db.String(50), nullable=False)
 
-from flask_login import UserMixin
-import bcrypt
-from app.hospital.models import Admission
-def is_patient_admitted(patient_id):
-    """Check if a patient is currently admitted"""
-    admission = Admission.query.filter_by(patient_id=patient_id, status='Admitted').first()
-    return admission is not None
-
-from app.hospital.models import Admission
+    def __repr__(self):
+        return f'<Medication for Patient {self.patient_id}: {self.drug_name}>'
 
 class PatientUser(UserMixin, db.Model):
-    __tablename__ = 'patient_user'
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128))
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
     patient_id = db.Column(db.String(36), db.ForeignKey('patient.id'), nullable=False)
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
-    
-    # Relationship with Patient model
-    patient = db.relationship('Patient', backref=db.backref('user_account', lazy=True, uselist=False))
-    
+    patient = db.relationship('Patient', backref=db.backref('patient_users', lazy=True))
+
     def set_password(self, password):
-        # Hash a password with bcrypt
-        salt = bcrypt.gensalt()
-        self.password_hash = bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
-    
+        self.password_hash = generate_password_hash(password)
+
     def check_password(self, password):
-        # Check a hashed password
-        return bcrypt.checkpw(password.encode('utf-8'), self.password_hash.encode('utf-8'))
+        return check_password_hash(self.password_hash, password)
+
+    def __repr__(self):
+        return f'<PatientUser {self.username}>'
+    
+# Nationality model for patient registration
+class Nationality(db.Model):
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    name = db.Column(db.String(50), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f'<Nationality {self.name}>'
+
+def get_all_nationalities():
+    return Nationality.query.all()

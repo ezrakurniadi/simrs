@@ -16,6 +16,8 @@ def dashboard_redirect():
     if not current_user.is_authenticated:
         return redirect(url_for('auth.home'))
     
+    print(f"Current user: {current_user.username}, Roles: {[role.name for role in current_user.roles]}")
+
     # Import here to avoid circular imports
     from app.helpers import get_user_dashboard_url
     return redirect(get_user_dashboard_url(current_user))
@@ -25,8 +27,9 @@ def dashboard_redirect():
 def login(role=None):
     logging.info(f"Login request - Method: {request.method}, Role: {role}, Authenticated: {current_user.is_authenticated}")
     if current_user.is_authenticated:
-        logging.info("User already authenticated, redirecting to patients index")
-        return redirect(url_for('patients.index'))
+        logging.info("User already authenticated, redirecting to dashboard")
+        from app.helpers import get_user_dashboard_url
+        return redirect(get_user_dashboard_url(current_user))
     
     form = LoginForm()
     logging.info(f"Login form method: {request.method}")

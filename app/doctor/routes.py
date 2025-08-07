@@ -10,7 +10,7 @@ from app.auth.models import User
 from datetime import date, datetime, timedelta
 
 
-@bp.route('/dashboard')
+@bp.route('/doctor')
 @roles_required('Doctor')
 def dashboard():
     # Get today's date

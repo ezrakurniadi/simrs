@@ -28,9 +28,7 @@ def roles_required(*roles):
                         
                         # Check if user has any of the required roles
                         if not current_user.has_role(*roles):
-                            # Import here to avoid circular imports
-                            from app.helpers import get_user_dashboard_url
-                            return redirect(get_user_dashboard_url(current_user))
+                            abort(403)
                             
                         return func(*args, **kwargs)
         return decorated_function

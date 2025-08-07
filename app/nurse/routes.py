@@ -10,7 +10,7 @@ from app.auth.models import User
 from datetime import date, datetime, timedelta
 
 
-@bp.route('/dashboard')
+@bp.route('/patients')
 @roles_required('Nurse')
 def dashboard():
     try:

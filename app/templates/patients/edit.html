@@ -5,7 +5,105 @@
 {% block content %}
 <h1>Edit Patient</h1>
 
-<p>This page will allow editing of patient information.</p>
-
-<a href="{{ url_for('patients.index') }}" class="btn btn-secondary">Back to Patients</a>
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.first_name.label }}
+        {{ form.first_name(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.last_name.label }}
+        {{ form.last_name(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.date_of_birth.label }}
+        {{ form.date_of_birth(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.gender.label }}
+        {{ form.gender(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.address.label }}
+        {{ form.address(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.phone.label }}
+        {{ form.phone(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.email.label }}
+        {{ form.email(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.id_type.label }}
+        {{ form.id_type(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.id_card_number.label }}
+        {{ form.id_card_number(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.blood_type.label }}
+        {{ form.blood_type(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.birthplace.label }}
+        {{ form.birthplace(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.marriage_status.label }}
+        {{ form.marriage_status(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.nationality.label }}
+        {{ form.nationality(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.vip_status.label }}
+        {{ form.vip_status(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.problematic_patient.label }}
+        {{ form.problematic_patient(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.loyalty_member.label }}
+        {{ form.loyalty_member(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.ihs_number.label }}
+        {{ form.ihs_number(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.chronic_condition.label }}
+        {{ form.chronic_condition(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.allergy_alert.label }}
+        {{ form.allergy_alert(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.preferred_communication_method.label }}
+        {{ form.preferred_communication_method(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.preferred_language.label }}
+        {{ form.preferred_language(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.emergency_contact_name.label }}
+        {{ form.emergency_contact_name(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.emergency_contact_phone.label }}
+        {{ form.emergency_contact_phone(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.emergency_contact_relationship.label }}
+        {{ form.emergency_contact_relationship(class_="form-control") }}
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a href="{{ url_for('patients.index') }}" class="btn btn-secondary">Cancel</a>
+</form>
 {% endblock %}

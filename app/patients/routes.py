@@ -21,7 +21,7 @@ def is_patient_admitted(patient_id):
 def index():
     return render_template('patients/index.html')
 
-@bp.route('/patients', methods=['GET'])
+@bp.route('/patients/list', methods=['GET'])
 @roles_required('Receptionist', 'Doctor', 'Nurse')
 def list_patients():
     # Get all patients
@@ -34,8 +34,6 @@ def view_patient(id):
     patient = Patient.query.get_or_404(id)
     is_admitted = is_patient_admitted(patient.id)
     return render_template('patients/view.html', patient=patient, is_admitted=is_admitted)
-
-    return render_template('patients/view.html', patient=patient)
 
 @bp.route('/patients/new', methods=['GET', 'POST'])
 @roles_required('Receptionist')
@@ -52,13 +50,30 @@ def create_patient():
                 address=form.address.data,
                 phone=form.phone.data,
                 email=form.email.data,
+                id_type=form.id_type.data,
+                id_card_number=form.id_card_number.data,
+                blood_type=form.blood_type.data,
+                birthplace=form.birthplace.data,
+                marriage_status=form.marriage_status.data,
+                nationality_id=form.nationality.data,
+                is_vip=form.is_vip.data,
+                is_problematic=form.is_problematic.data,
+                is_loyalty_member=form.is_loyalty_member.data,
+                ihs_number=form.ihs_number.data,
+                has_chronic_condition=form.has_chronic_condition.data,
+                has_allergy_alert=form.has_allergy_alert.data,
+                preferred_communication=form.preferred_communication.data,
+                preferred_language=form.preferred_language.data,
+                emergency_contact_name=form.emergency_contact_name.data,
+                emergency_contact_phone=form.emergency_contact_phone.data,
+                emergency_contact_relationship=form.emergency_contact_relationship.data,
                 created_by=str(current_user.id)  # Store the ID of the user creating the patient
             )
-            
+
             # Add patient to database
             db.session.add(patient)
             db.session.commit()
-            
+
             flash('Patient registered successfully!', 'success')
             return redirect(url_for('patients.index'))
         except Exception as e:
@@ -66,13 +81,74 @@ def create_patient():
             flash('An error occurred while registering the patient. Please try again.', 'error')
             # Log the error for debugging (in a real application, you would use a proper logger)
             print(f"Error registering patient: {str(e)}")
-    
+
     return render_template('patients/new.html', form=form)
 
 @bp.route('/patients/<int:id>/edit', methods=['GET', 'POST'])
+@roles_required('Receptionist')
 def edit_patient(id):
-    # TODO: Implement patient edit logic
-    return render_template('patients/edit.html')
+    patient = Patient.query.get_or_404(id)
+    form = PatientForm(obj=patient)
+
+    if form.validate_on_submit():
+        try:
+            # Update patient information
+            patient.first_name = form.first_name.data
+            patient.last_name = form.last_name.data
+            patient.date_of_birth = form.date_of_birth.data
+            patient.gender = form.gender.data
+            patient.address = form.address.data
+            patient.phone = form.phone.data
+            patient.email = form.email.data
+            patient.id_type = form.id_type.data
+            patient.id_card_number = form.id_card_number.data
+            patient.blood_type = form.blood_type.data
+            patient.birthplace = form.birthplace.data
+            patient.marriage_status = form.marriage_status.data
+            patient.nationality_id = form.nationality.data
+            patient.is_vip = form.is_vip.data
+            patient.is_problematic = form.is_problematic.data
+            patient.is_loyalty_member = form.is_loyalty_member.data
+            patient.ihs_number = form.ihs_number.data
+            patient.has_chronic_condition = form.has_chronic_condition.data
+            patient.has_allergy_alert = form.has_allergy_alert.data
+            patient.preferred_communication = form.preferred_communication.data
+            patient.preferred_language = form.preferred_language.data
+            patient.emergency_contact_name = form.emergency_contact_name.data
+            patient.emergency_contact_phone = form.emergency_contact_phone.data
+            patient.emergency_contact_relationship = form.emergency_contact_relationship.data
+
+            db.session.commit()
+
+            flash('Patient information updated successfully!', 'success')
+            return redirect(url_for('patients.view_patient', id=patient.id))
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred while updating the patient. Please try again.', 'error')
+            print(f"Error updating patient: {str(e)}")
+
+    return render_template('patients/edit.html', form=form, patient=patient)
+
+# Patient deletion route
+@bp.route('/patients/<int:id>/delete', methods=['GET', 'POST'])
+@roles_required('Receptionist')
+def delete_patient(id):
+    patient = Patient.query.get_or_404(id)
+
+    if request.method == 'POST':
+        try:
+            # Delete patient from database
+            db.session.delete(patient)
+            db.session.commit()
+
+            flash('Patient deleted successfully!', 'success')
+            return redirect(url_for('patients.index'))
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred while deleting the patient. Please try again.', 'error')
+            print(f"Error deleting patient: {str(e)}")
+
+    return render_template('patients/delete.html', patient=patient)
 
 # Test route for role-based access control decorator
 @bp.route('/patients/test_doctor_only', methods=['GET'])
@@ -111,7 +187,7 @@ def search_patients():
             query = query.filter(Patient.phone.ilike(f"%{form.phone.data}%"))
         
         patients = query.all()
-    
+
     return render_template('patients/search.html', form=form, patients=patients)
 
 @bp.route('/patients/<int:patient_id>/vitals', methods=['GET'])
@@ -131,7 +207,7 @@ def add_vitals(patient_id):
         try:
             vitals = Vitals(
                 patient_id=patient.id,
-                recorded_by=str(current_user.id),
+                recorded_by=current_user.id,
                 date=form.date.data,
                 bp_systolic=form.bp_systolic.data,
                 bp_diastolic=form.bp_diastolic.data,
@@ -199,7 +275,6 @@ def view_encounters(patient_id):
                     }
                 })
     
-    # Sort encounters by date (most recent first)
     # Sort encounters by date (most recent first)
     encounters.sort(key=lambda x: x['date'], reverse=True)
     

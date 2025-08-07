@@ -1,5 +1,6 @@
 import uuid
-from app.auth.models import db, User, Patient
+from app.auth.models import db, User
+from app.patients.models import Patient
 
 class LabOrder(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))

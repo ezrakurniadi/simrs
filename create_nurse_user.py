@@ -58,16 +58,13 @@ def create_nurse_user(username: str, email: str, first_name: str, last_name: str
 
 # Test block for sample scenarios
 if __name__ == "__main__":
-    # Create Flask app context with proper PostgreSQL credentials
+    # Create Flask app context using development database
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@localhost/simrs_test'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1Sampai6@localhost/ehr_dev'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
     
     with app.app_context():
-        # Create tables
-        db.create_all()
-        
         # Test 1: Successful nurse creation
         result = create_nurse_user(
             username='nurse1',
@@ -102,14 +99,27 @@ if __name__ == "__main__":
         print(result)
         
         # Test 4: Original create_user functionality (backward compatibility)
-        from app.admin.models import User as AdminUser
-        admin_result = AdminUser.create_user(
+        # Assuming create_user is a function in app.auth.models
+        from app.auth.models import User as AuthUser
+        # Create admin user using the same method as create_nurse_user
+        admin_role = Role.query.filter_by(name='Admin').first()
+        if not admin_role:
+            admin_role = Role(name='Admin', description='Admin role')
+            db.session.add(admin_role)
+        admin_user = AuthUser(
             username='admin1',
             email='admin1@example.com',
             first_name='Admin',
-            last_name='One',
-            password='adminpass',
-            role='Admin'
+            last_name='One'
         )
+        admin_user.set_password('adminpass')
+        admin_user.roles.append(admin_role)
+        db.session.add(admin_user)
+        try:
+            db.session.commit()
+            admin_result = {"success": True, "message": "Admin user created successfully", "user": admin_user.username}
+        except Exception as e:
+            db.session.rollback()
+            admin_result = {"success": False, "message": f"Creation failed: {str(e)}"}
         print("\nTEST 4 - Original Admin User Creation:")
         print(admin_result)

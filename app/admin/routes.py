@@ -163,31 +163,38 @@ def delete_role(id):
     flash('Role deleted successfully.')
     return redirect(url_for('admin.list_roles'))
 
-@bp.route('/admin/users/<user_id>/remove-role/<role_id>', methods=['POST'])
+@bp.route('/admin/users/<user_id>/remove-role', methods=['POST'])
 @roles_required('Admin')
-def remove_role(user_id, role_id):
+def remove_role(user_id):
     user = User.query.get_or_404(user_id)
-    role = Role.query.get_or_404(role_id)
-    
-    # Check if user has this role
-    if role in user.roles:
-        user.roles.remove(role)
-        db.session.commit()
-        flash(f'Role "{role.name}" removed from user "{user.username}" successfully.', 'success')
+    form = RemoveRoleForm()
+
+    if form.validate_on_submit():
+        role_id = form.role_id.data
+        role = Role.query.get(role_id)
+
+        if role and role in user.roles:
+            user.roles.remove(role)
+            db.session.commit()
+            flash(f'Role "{role.name}" removed from user "{user.username}" successfully.', 'success')
+        else:
+            flash('Invalid role or user does not have this role.', 'error')
     else:
-        flash(f'User does not have the role "{role.name}".', 'warning')
-    
-    return redirect(url_for('admin.view_user', id=user.id))
+        flash('Invalid form submission.', 'error')
+
+    return redirect(url_for('admin.assign_role', user_id=user.id))
 
 @bp.route('/admin/users/<user_id>/assign-role', methods=['GET', 'POST'])
 @roles_required('Admin')
 def assign_role(user_id):
     user = User.query.get_or_404(user_id)
     form = UserRoleForm()
-    
+    remove_role_form = RemoveRoleForm()
+
     # Populate the role choices
     form.role_id.choices = [(role.id, role.name) for role in Role.query.all()]
-    
+    remove_role_form.role_id.choices = [(role.id, role.name) for role in user.roles]
+
     if form.validate_on_submit():
         role = Role.query.get(form.role_id.data)
         if role:
@@ -201,5 +208,17 @@ def assign_role(user_id):
             return redirect(url_for('admin.view_user', id=user.id))
         else:
             flash('Invalid role selected.', 'error')
-    
-    return render_template('admin/users/assign_role.html', form=form, user=user)
+
+    if remove_role_form.validate_on_submit():
+        role_id = remove_role_form.role_id.data
+        role = Role.query.get(role_id)
+
+        if role and role in user.roles:
+            user.roles.remove(role)
+            db.session.commit()
+            flash(f'Role "{role.name}" removed from user "{user.username}" successfully.', 'success')
+        else:
+            flash('Invalid role or user does not have this role.', 'error')
+        return redirect(url_for('admin.assign_role', user_id=user.id))
+
+    return render_template('admin/users/assign_role.html', form=form, remove_role_form=remove_role_form, user=user)

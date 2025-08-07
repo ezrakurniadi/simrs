@@ -8,7 +8,7 @@ from app.auth.models import User
 from datetime import date, datetime, timedelta
 
 
-@bp.route('/dashboard')
+@bp.route('/receptionist')
 @roles_required('Receptionist')
 def dashboard():
     try:

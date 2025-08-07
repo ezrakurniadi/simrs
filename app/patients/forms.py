@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, DateField, SelectField, TextAreaField, SubmitField, IntegerField, FloatField, DateTimeField
 from wtforms.validators import DataRequired, Email, Optional, NumberRange
+import requests
+from flask import current_app
 
 class PatientForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired()])
@@ -10,7 +12,38 @@ class PatientForm(FlaskForm):
     address = TextAreaField('Address')
     phone = StringField('Phone')
     email = StringField('Email', validators=[Email()])
+    id_type = StringField('ID Type')
+    id_card_number = StringField('ID Card Number')
+    blood_type = StringField('Blood Type')
+    birthplace = StringField('Birthplace')
+    marriage_status = SelectField('Marriage Status', choices=[('Single', 'Single'), ('Married', 'Married'), ('Divorced', 'Divorced'), ('Widowed', 'Widowed')])
+    nationality_id = SelectField('Nationality', coerce=str, choices=[])
+    vip_status = SelectField('VIP Status', choices=[(True, 'Yes'), (False, 'No')], default=False)
+    problematic_patient = SelectField('Problematic Patient', choices=[(True, 'Yes'), (False, 'No')], default=False)
+    loyalty_member = SelectField('Loyalty Member', choices=[(True, 'Yes'), (False, 'No')], default=False)
+    ihs_number = StringField('IHS Number')
+    chronic_condition = SelectField('Chronic Condition', choices=[(True, 'Yes'), (False, 'No')], default=False)
+    allergy_alert = SelectField('Allergy Alert', choices=[(True, 'Yes'), (False, 'No')], default=False)
+    preferred_communication = StringField('Preferred Communication Method')
+    preferred_language = StringField('Preferred Language')
+    emergency_contact_name = StringField('Emergency Contact Name')
+    emergency_contact_phone = StringField('Emergency Contact Phone')
+    emergency_contact_relationship = StringField('Emergency Contact Relationship')
     submit = SubmitField('Save Patient')
+
+    def __init__(self, *args, **kwargs):
+        super(PatientForm, self).__init__(*args, **kwargs)
+        # Fetch nationalities from the API
+        try:
+            response = requests.get(f"{current_app.config['API_BASE_URL']}/api/nationalities")
+            if response.status_code == 200:
+                nationalities = response.json()
+                self.nationality_id.choices = [(str(n['id']), n['name']) for n in nationalities]
+            else:
+                self.nationality_id.choices = []
+        except Exception as e:
+            self.nationality_id.choices = []
+            print(f"Error fetching nationalities: {e}")
 
 class PatientSearchForm(FlaskForm):
     first_name = StringField('First Name', validators=[Optional()])

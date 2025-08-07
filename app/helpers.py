@@ -13,4 +13,4 @@ def get_user_dashboard_url(user):
     elif user.has_role('Lab Technician'):
         return url_for('lab.technician_dashboard')
     else:
-        return url_for('patients.index')
+        return url_for('home.index')

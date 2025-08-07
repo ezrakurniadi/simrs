@@ -29,6 +29,9 @@
                     <td>{{ patient.phone }}</td>
                     <td>
                         <a href="{{ url_for('patients.view_patient', id=patient.id) }}" class="btn btn-sm btn-info">View</a>
+                        {% if current_user.has_role('Receptionist') %}
+                        <a href="{{ url_for('patients.edit_patient', id=patient.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                        {% endif %}
                         {% if current_user.has_role('Nurse') or current_user.has_role('Doctor') %}
                         <a href="{{ url_for('patients.add_vitals', patient_id=patient.id) }}" class="btn btn-sm btn-primary">Add Vitals</a>
                         <a href="{{ url_for('patients.add_allergy', patient_id=patient.id) }}" class="btn btn-sm btn-warning">Add Allergy</a>

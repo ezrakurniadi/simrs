@@ -1,5 +1,6 @@
 import uuid
-from app.auth.models import db, User, Patient
+from app.patients.models import Patient
+from app.auth.models import User, db
 
 class ClinicalNote(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))

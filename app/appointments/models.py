@@ -1,6 +1,7 @@
 import uuid
 from sqlalchemy.dialects.postgresql import JSONB
-from app.auth.models import Patient, User, db
+from app.patients.models import Patient
+from app.auth.models import User, db
 from app.hospital.models import Room
 
 class Appointment(db.Model):

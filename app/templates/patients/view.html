@@ -66,8 +66,30 @@
         <p><strong>Email:</strong> {{ patient.email or 'N/A' }}</p>
         <p><strong>Created At:</strong> {{ patient.created_at.strftime('%Y-%m-%d %H:%M:%S') if patient.created_at else 'N/A' }}</p>
         <p><strong>Updated At:</strong> {{ patient.updated_at.strftime('%Y-%m-%d %H:%M:%S') if patient.updated_at else 'N/A' }}</p>
+        </div>
       </div>
-    </div>
+ 
+     <div class="row mt-3">
+       <div class="col-md-6">
+         <p><strong>ID Type:</strong> {{ patient.id_type or 'N/A' }}</p>
+         <p><strong>ID Card Number:</strong> {{ patient.id_card_number or 'N/A' }}</p>
+         <p><strong>Blood Type:</strong> {{ patient.blood_type or 'N/A' }}</p>
+         <p><strong>Birthplace:</strong> {{ patient.birthplace or 'N/A' }}</p>
+         <p><strong>Marriage Status:</strong> {{ patient.marriage_status or 'N/A' }}</p>
+         <p><strong>Nationality:</strong> {{ patient.nationality.name if patient.nationality else 'N/A' }}</p>
+       </div>
+       <div class="col-md-6">
+         <p><strong>VIP Status:</strong> {{ 'Yes' if patient.is_vip else 'No' }}</p>
+         <p><strong>Problematic Patient:</strong> {{ 'Yes' if patient.is_problematic else 'No' }}</p>
+         <p><strong>Loyalty Member:</strong> {{ 'Yes' if patient.is_loyalty_member else 'No' }}</p>
+         <p><strong>IHS Number:</strong> {{ patient.ihs_number or 'N/A' }}</p>
+         <p><strong>Chronic Condition:</strong> {{ 'Yes' if patient.has_chronic_condition else 'No' }}</p>
+         <p><strong>Allergy Alert:</strong> {{ 'Yes' if patient.has_allergy_alert else 'No' }}</p>
+         <p><strong>Preferred Communication:</strong> {{ patient.preferred_communication or 'N/A' }}</p>
+         <p><strong>Preferred Language:</strong> {{ patient.preferred_language or 'N/A' }}</p>
+         <p><strong>Emergency Contact:</strong> {{ patient.emergency_contact or 'N/A' }}</p>
+       </div>
+     </div>
     
     {% if patient.additional_data %}
     <div class="row">
@@ -220,5 +242,8 @@
   <a href="{{ url_for('patients.index') }}" class="btn btn-secondary">Back to Patients</a>
   <a href="{{ url_for('patients.edit_patient', id=patient.id) }}" class="btn btn-primary">Edit Patient</a>
   <a href="{{ url_for('patients.view_encounters', patient_id=patient.id) }}" class="btn btn-info">View Chronological Encounters</a>
+  {% if current_user.has_role('Receptionist') %}
+    <a href="{{ url_for('patients.delete_patient', id=patient.id) }}" class="btn btn-danger">Delete Patient</a>
+  {% endif %}
 </div>
 {% endblock %}
