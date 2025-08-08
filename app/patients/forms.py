@@ -2,7 +2,21 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, DateField, SelectField, TextAreaField, SubmitField, IntegerField, FloatField, DateTimeField
 from wtforms.validators import DataRequired, Email, Optional, NumberRange
 import requests
-from flask import current_app
+import json
+from flask import current_app as app
+from app.system_params.models import SystemParameter
+
+def get_id_types(db):
+    with db.engine.connect() as connection:
+        id_types = db.session.execute(
+            db.select(SystemParameter).filter_by(name='id_types')
+        ).scalar()
+        if id_types and id_types.value:
+            try:
+                return [(str(i), name) for i, name in enumerate(json.loads(id_types.value).items())]
+            except (ValueError, TypeError):
+                return []
+    return []
 
 class PatientForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired()])
@@ -12,9 +26,21 @@ class PatientForm(FlaskForm):
     address = TextAreaField('Address')
     phone = StringField('Phone')
     email = StringField('Email', validators=[Email()])
-    id_type = StringField('ID Type')
-    id_card_number = StringField('ID Card Number')
-    blood_type = StringField('Blood Type')
+    id_type = SelectField(
+        'ID Type',
+        coerce=int,
+        validators=[DataRequired()]
+    )
+    id_card_number = StringField(
+        'ID Card Number',
+        validators=[DataRequired()]
+    )
+    blood_type = SelectField(
+        'Blood Type',
+        choices=[('A+', 'A+'), ('A-', 'A-'), ('B+', 'B+'), ('B-', 'B-'),
+                 ('AB+', 'AB+'), ('AB-', 'AB-'), ('O+', 'O+'), ('O-', 'O-')],
+        validators=[DataRequired()]
+    )
     birthplace = StringField('Birthplace')
     marriage_status = SelectField('Marriage Status', choices=[('Single', 'Single'), ('Married', 'Married'), ('Divorced', 'Divorced'), ('Widowed', 'Widowed')])
     nationality_id = SelectField('Nationality', coerce=str, choices=[])
@@ -31,7 +57,7 @@ class PatientForm(FlaskForm):
     emergency_contact_relationship = StringField('Emergency Contact Relationship')
     submit = SubmitField('Save Patient')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, db=None, **kwargs):
         super(PatientForm, self).__init__(*args, **kwargs)
         # Fetch nationalities from the API
         try:
@@ -44,6 +70,10 @@ class PatientForm(FlaskForm):
         except Exception as e:
             self.nationality_id.choices = []
             print(f"Error fetching nationalities: {e}")
+
+        # Set ID types
+        if db:
+            self.id_type.choices = get_id_types(db)
 
 class PatientSearchForm(FlaskForm):
     first_name = StringField('First Name', validators=[Optional()])
