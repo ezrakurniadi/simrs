@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, flash, request
 from flask_login import current_user
 from app.patients import bp
 from app.utils import roles_required
-from app.patients.forms import PatientForm, PatientSearchForm, VitalsForm, AllergyForm, MedicationForm
+from app.patients.forms import PatientForm, PatientSearchForm, VitalsForm, AllergyForm, MedicationForm, PatientRegistrationForm
 from app.patients.models import Patient, Vitals, Allergy, Medication, db, PatientUser
 from app.auth.models import User
 from app.clinical_notes.models import ClinicalNote
@@ -28,7 +28,7 @@ def list_patients():
     patients = Patient.query.all()
     return render_template('patients/list.html', patients=patients)
 
-@bp.route('/patients/<int:id>', methods=['GET'])
+@bp.route('/patients/<id>', methods=['GET'])
 @roles_required('Doctor', 'Nurse', 'Receptionist')
 def view_patient(id):
     patient = Patient.query.get_or_404(id)
@@ -38,7 +38,7 @@ def view_patient(id):
 @bp.route('/patients/new', methods=['GET', 'POST'])
 @roles_required('Receptionist')
 def create_patient():
-    form = PatientForm()
+    form = PatientRegistrationForm()
     if form.validate_on_submit():
         try:
             # Create new patient
@@ -55,18 +55,24 @@ def create_patient():
                 blood_type=form.blood_type.data,
                 birthplace=form.birthplace.data,
                 marriage_status=form.marriage_status.data,
-                nationality_id=form.nationality.data,
-                is_vip=form.is_vip.data,
-                is_problematic=form.is_problematic.data,
-                is_loyalty_member=form.is_loyalty_member.data,
+                nationality_id=form.nationality_id.data,
+                vip_status=form.vip_status.data,
+                problematic_patient=form.problematic_patient.data,
+                problematic_patient_reason=form.problematic_patient_reason.data if form.problematic_patient.data else None,
+                loyalty_member=form.loyalty_member.data,
+                loyalty_member_number=form.loyalty_member_number.data if form.loyalty_member.data else None,
                 ihs_number=form.ihs_number.data,
-                has_chronic_condition=form.has_chronic_condition.data,
-                has_allergy_alert=form.has_allergy_alert.data,
+                chronic_condition=form.chronic_condition.data,
+                chronic_condition_details=form.chronic_condition_details.data if form.chronic_condition.data else None,
+                allergy_alert=form.allergy_alert.data,
+                allergy_alert_details=form.allergy_alert_details.data if form.allergy_alert.data else None,
                 preferred_communication=form.preferred_communication.data,
                 preferred_language=form.preferred_language.data,
                 emergency_contact_name=form.emergency_contact_name.data,
                 emergency_contact_phone=form.emergency_contact_phone.data,
                 emergency_contact_relationship=form.emergency_contact_relationship.data,
+                insurance_provider=form.insurance_provider.data,
+                is_deceased=form.is_deceased.data,
                 created_by=str(current_user.id)  # Store the ID of the user creating the patient
             )
 
@@ -84,7 +90,7 @@ def create_patient():
 
     return render_template('patients/new.html', form=form)
 
-@bp.route('/patients/<int:id>/edit', methods=['GET', 'POST'])
+@bp.route('/patients/<id>/edit', methods=['GET', 'POST'])
 @roles_required('Receptionist')
 def edit_patient(id):
     patient = Patient.query.get_or_404(id)
@@ -105,13 +111,17 @@ def edit_patient(id):
             patient.blood_type = form.blood_type.data
             patient.birthplace = form.birthplace.data
             patient.marriage_status = form.marriage_status.data
-            patient.nationality_id = form.nationality.data
-            patient.is_vip = form.is_vip.data
-            patient.is_problematic = form.is_problematic.data
-            patient.is_loyalty_member = form.is_loyalty_member.data
+            patient.nationality_id = form.nationality_id.data
+            patient.vip_status = form.vip_status.data
+            patient.problematic_patient = form.problematic_patient.data
+            patient.problematic_patient_reason = form.problematic_patient_reason.data if form.problematic_patient.data else None
+            patient.loyalty_member = form.loyalty_member.data
+            patient.loyalty_member_number = form.loyalty_member_number.data if form.loyalty_member.data else None
             patient.ihs_number = form.ihs_number.data
-            patient.has_chronic_condition = form.has_chronic_condition.data
-            patient.has_allergy_alert = form.has_allergy_alert.data
+            patient.chronic_condition = form.chronic_condition.data
+            patient.chronic_condition_details = form.chronic_condition_details.data if form.chronic_condition.data else None
+            patient.allergy_alert = form.allergy_alert.data
+            patient.allergy_alert_details = form.allergy_alert_details.data if form.allergy_alert.data else None
             patient.preferred_communication = form.preferred_communication.data
             patient.preferred_language = form.preferred_language.data
             patient.emergency_contact_name = form.emergency_contact_name.data
@@ -130,7 +140,7 @@ def edit_patient(id):
     return render_template('patients/edit.html', form=form, patient=patient)
 
 # Patient deletion route
-@bp.route('/patients/<int:id>/delete', methods=['GET', 'POST'])
+@bp.route('/patients/<id>/delete', methods=['GET', 'POST'])
 @roles_required('Receptionist')
 def delete_patient(id):
     patient = Patient.query.get_or_404(id)
@@ -190,14 +200,14 @@ def search_patients():
 
     return render_template('patients/search.html', form=form, patients=patients)
 
-@bp.route('/patients/<int:patient_id>/vitals', methods=['GET'])
+@bp.route('/patients/<patient_id>/vitals', methods=['GET'])
 @roles_required('Doctor', 'Nurse')
 def view_vitals(patient_id):
     patient = Patient.query.get_or_404(patient_id)
     vitals = Vitals.query.filter_by(patient_id=patient.id).order_by(Vitals.date.desc()).all()
     return render_template('patients/vitals/view.html', patient=patient, vitals=vitals)
 
-@bp.route('/patients/<int:patient_id>/vitals/new', methods=['GET', 'POST'])
+@bp.route('/patients/<patient_id>/vitals/new', methods=['GET', 'POST'])
 @roles_required('Doctor', 'Nurse')
 def add_vitals(patient_id):
     patient = Patient.query.get_or_404(patient_id)
@@ -229,7 +239,7 @@ def add_vitals(patient_id):
     
     return render_template('patients/vitals/new.html', form=form, patient=patient)
 
-@bp.route('/patients/<int:patient_id>/encounters', methods=['GET'])
+@bp.route('/patients/<patient_id>/encounters', methods=['GET'])
 @roles_required('Doctor', 'Nurse')
 def view_encounters(patient_id):
     patient = Patient.query.get_or_404(patient_id)
@@ -281,14 +291,14 @@ def view_encounters(patient_id):
     return render_template('patients/encounters.html', patient=patient, encounters=encounters)
 
 # Allergy routes
-@bp.route('/patients/<int:patient_id>/allergies', methods=['GET'])
+@bp.route('/patients/<patient_id>/allergies', methods=['GET'])
 @roles_required('Doctor', 'Nurse')
 def view_allergies(patient_id):
     patient = Patient.query.get_or_404(patient_id)
     allergies = Allergy.query.filter_by(patient_id=patient.id).order_by(Allergy.recorded_date.desc()).all()
     return render_template('patients/allergies/view.html', patient=patient, allergies=allergies)
 
-@bp.route('/patients/<int:patient_id>/allergies/new', methods=['GET', 'POST'])
+@bp.route('/patients/<patient_id>/allergies/new', methods=['GET', 'POST'])
 @roles_required('Doctor', 'Nurse')
 def add_allergy(patient_id):
     patient = Patient.query.get_or_404(patient_id)
@@ -322,7 +332,7 @@ def add_allergy(patient_id):
     
     return render_template('patients/allergies/new.html', form=form, patient=patient)
 
-@bp.route('/patients/<int:patient_id>/allergies/<allergy_id>/edit', methods=['GET', 'POST'])
+@bp.route('/patients/<patient_id>/allergies/<allergy_id>/edit', methods=['GET', 'POST'])
 @roles_required('Doctor', 'Nurse')
 def edit_allergy(patient_id, allergy_id):
     patient = Patient.query.get_or_404(patient_id)
@@ -355,14 +365,14 @@ def edit_allergy(patient_id, allergy_id):
     return render_template('patients/allergies/edit.html', form=form, patient=patient, allergy=allergy)
 
 # Medication routes
-@bp.route('/patients/<int:patient_id>/medications', methods=['GET'])
+@bp.route('/patients/<patient_id>/medications', methods=['GET'])
 @roles_required('Doctor', 'Nurse')
 def view_medications(patient_id):
     patient = Patient.query.get_or_404(patient_id)
     medications = Medication.query.filter_by(patient_id=patient.id).order_by(Medication.start_date.desc()).all()
     return render_template('patients/medications/view.html', patient=patient, medications=medications)
 
-@bp.route('/patients/<int:patient_id>/medications/new', methods=['GET', 'POST'])
+@bp.route('/patients/<patient_id>/medications/new', methods=['GET', 'POST'])
 @roles_required('Doctor')
 def prescribe_medication(patient_id):
     patient = Patient.query.get_or_404(patient_id)
@@ -398,7 +408,7 @@ def prescribe_medication(patient_id):
     
     return render_template('patients/medications/new.html', form=form, patient=patient)
 
-@bp.route('/patients/<int:patient_id>/medications/<medication_id>/edit', methods=['GET', 'POST'])
+@bp.route('/patients/<patient_id>/medications/<medication_id>/edit', methods=['GET', 'POST'])
 @roles_required('Doctor')
 def edit_medication(patient_id, medication_id):
     patient = Patient.query.get_or_404(patient_id)

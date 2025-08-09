@@ -18,13 +18,50 @@
             <h1>System Parameters Dashboard</h1>
             <p>Manage application-wide settings and configurations.</p>
 
+            <!-- Summary Statistics -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Total Nationalities</h5>
+                            <p class="card-text display-4">{{ nationalities_count }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Active Settings</h5>
+                            <p class="card-text display-4">{{ active_settings_count }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">System Updates</h5>
+                            <p class="card-text display-4">{{ system_updates_count }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Last Updated</h5>
+                            <p class="card-text display-4">{{ last_updated }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Management Cards -->
             <div class="row">
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">System Settings</h5>
                             <p class="card-text">View and manage system parameters.</p>
-                            <a href="{{ url_for('admin.system_params.manage_settings') }}" class="btn btn-primary">Manage System Settings</a>
+                            <a href="{{ url_for('system_params.manage_settings') }}" class="btn btn-primary">Manage System Settings</a>
                         </div>
                     </div>
                 </div>
@@ -33,10 +70,12 @@
                         <div class="card-body">
                             <h5 class="card-title">Nationalities</h5>
                             <p class="card-text">Manage nationalities used in the system.</p>
-                            <a href="{{ url_for('admin.system_params.manage_nationalities') }}" class="btn btn-primary">Manage Nationalities</a>
+                            <a href="{{ url_for('system_params.manage_nationalities') }}" class="btn btn-primary">Manage Nationalities</a>
                         </div>
                     </div>
                 </div>
+                <!-- Additional management options would go here -->
+                <!-- For now, we'll keep it simple with the existing options -->
             </div>
         </div>
     </div>

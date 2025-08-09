@@ -1,230 +1,55 @@
-# Patient Registration Template Changes
+# Template Implementation Plan
 
-## 1. Update ID Type Field
-- Change from text input to dropdown menu
+## Overview
+This document outlines the steps needed to implement the updated patient registration template that includes all the new fields and dynamic field behavior.
 
-## 2. Update Blood Type Field
-- Change from text input to dropdown menu with predefined options
+## Current State
+The current template at `app/templates/patients/new.html` only includes basic fields and is missing:
+- ID Type field
+- ID Card Number field
+- Blood Type field
+- Birthplace field
+- Marriage Status field
+- Preferred Communication field
+- Preferred Language field
+- VIP Status field
+- Problematic Patient Reason field (dynamic)
+- Loyalty Member Number field (dynamic)
+- Chronic Condition Details field (dynamic)
+- Allergy Alert Details field (dynamic)
+- JavaScript for dynamic field behavior
 
-## 3. Add Dynamic Fields
-- Add fields for Problematic Patient reason, Loyalty Member number, Chronic Condition details, and Allergy Alert details
-- Use JavaScript to dynamically show/hide these fields based on user selection
+## Implementation Steps
 
-## 4. Add JavaScript for Dynamic Field Display
-- Add event listeners to toggle visibility of additional fields based on user selection
+### 1. Add Missing Fields to Personal Information Section
+- Add ID Type field as a select input
+- Add ID Card Number field as a text input
+- Add Birthplace field as a text input
+- Add Blood Type field as a select input with predefined options
+- Add Marriage Status field as a select input
 
-## Implementation Details
+### 2. Add Missing Fields to Contact Information Section
+- Add Preferred Communication field as a text input
+- Add Preferred Language field as a text input
 
-### Current Template (app/templates/patients/new.html)
-```html
-{% extends "base.html" %}
+### 3. Add Missing Fields to Status Section
+- Add VIP Status field as a select input
+- Add Problematic Patient Reason field as a textarea (initially hidden)
+- Add Loyalty Member Number field as a text input (initially hidden)
+- Add Chronic Condition Details field as a textarea (initially hidden)
+- Add Allergy Alert Details field as a textarea (initially hidden)
 
-{% block title %}Register New Patient{% endblock %}
+### 4. Implement Dynamic Field Behavior
+- Add JavaScript to show/hide dynamic fields based on their corresponding boolean field values
+- When Problematic Patient is "Yes", show Problematic Patient Reason field
+- When Loyalty Member is "Yes", show Loyalty Member Number field
+- When Chronic Condition is "Yes", show Chronic Condition Details field
+- When Allergy Alert is "Yes", show Allergy Alert Details field
 
-{% block content %}
-<h1>Register New Patient</h1>
+## Updated Template Code
 
-<form method="POST" action="{{ url_for('patients.create_patient') }}">
-    {{ form.hidden_tag() }}
+The updated template should match the "Updated Template" section in `patient_template_changes.md`:
 
-    <div class="row">
-        <!-- Personal Information Section -->
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="card-title">Personal Information</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        {{ form.first_name.label(class="form-label") }}
-                        {{ form.first_name(class="form-control") }}
-                        {% if form.first_name.errors %}
-                            <div class="text-danger">
-                                {% for error in form.first_name.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.last_name.label(class="form-label") }}
-                        {{ form.last_name(class="form-control") }}
-                        {% if form.last_name.errors %}
-                            <div class="text-danger">
-                                {% for error in form.last_name.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.date_of_birth.label(class="form-label") }}
-                        {{ form.date_of_birth(class="form-control") }}
-                        {% if form.date_of_birth.errors %}
-                            <div class="text-danger">
-                                {% for error in form.date_of_birth.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.gender.label(class="form-label") }}
-                        {{ form.gender(class="form-select") }}
-                        {% if form.gender.errors %}
-                            <div class="text-danger">
-                                {% for error in form.gender.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Contact Information Section -->
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="card-title">Contact Information</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        {{ form.address.label(class="form-label") }}
-                        {{ form.address(class="form-control", rows="3") }}
-                        {% if form.address.errors %}
-                            <div class="text-danger">
-                                {% for error in form.address.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.phone.label(class="form-label") }}
-                        {{ form.phone(class="form-control") }}
-                        {% if form.phone.errors %}
-                            <div class="text-danger">
-                                {% for error in form.phone.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.email.label(class="form-label") }}
-                        {{ form.email(class="form-control") }}
-                        {% if form.email.errors %}
-                            <div class="text-danger">
-                                {% for error in form.email.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <!-- Emergency Contact Section -->
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="card-title">Emergency Contact</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        {{ form.emergency_contact_name.label(class="form-label") }}
-                        {{ form.emergency_contact_name(class="form-control") }}
-                        {% if form.emergency_contact_name.errors %}
-                            <div class="text-danger">
-                                {% for error in form.emergency_contact_name.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.emergency_contact_phone.label(class="form-label") }}
-                        {{ form.emergency_contact_phone(class="form-control") }}
-                        {% if form.emergency_contact_phone.errors %}
-                            <div class="text-danger">
-                                {% for error in form.emergency_contact_phone.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.emergency_contact_relationship.label(class="form-label") }}
-                        {{ form.emergency_contact_relationship(class="form-control") }}
-                        {% if form.emergency_contact_relationship.errors %}
-                            <div class="text-danger">
-                                {% for error in form.emergency_contact_relationship.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Insurance Information Section -->
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="card-title">Insurance Information</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        {{ form.insurance_provider.label(class="form-label") }}
-                        {{ form.insurance_provider(class="form-control") }}
-                        {% if form.insurance_provider.errors %}
-                            <div class="text-danger">
-                                {% for error in form.insurance_provider.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Status Section -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="card-title">Status</h5>
-        </div>
-        <div class="card-body">
-            <div class="mb-3">
-                {{ form.is_deceased.label(class="form-label") }}
-                {{ form.is_deceased(class="form-select") }}
-                {% if form.is_deceased.errors %}
-                    <div class="text-danger">
-                        {% for error in form.is_deceased.errors %}
-                            <small>{{ error }}</small>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-
-    <div class="mb-3">
-        {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url_for('patients.index') }}" class="btn btn-secondary">Cancel</a>
-    </div>
-</form>
-{% endblock %}
-```
-
-### Updated Template
 ```html
 {% extends "base.html" %}
 
@@ -655,3 +480,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endblock %}
+```
+
+## Next Steps
+To implement these changes, we need to switch to Code mode and update the actual template file at `app/templates/patients/new.html` with the code above.

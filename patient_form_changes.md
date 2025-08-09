@@ -32,9 +32,21 @@ class PatientForm(FlaskForm):
     address = TextAreaField('Address')
     phone = StringField('Phone')
     email = StringField('Email', validators=[Email()])
-    id_type = StringField('ID Type')
-    id_card_number = StringField('ID Card Number')
-    blood_type = StringField('Blood Type')
+    id_type = SelectField(
+        'ID Type',
+        coerce=int,
+        validators=[DataRequired()]
+    )
+    id_card_number = StringField(
+        'ID Card Number',
+        validators=[DataRequired()]
+    )
+    blood_type = SelectField(
+        'Blood Type',
+        choices=[('A+', 'A+'), ('A-', 'A-'), ('B+', 'B+'), ('B-', 'B-'),
+                 ('AB+', 'AB+'), ('AB-', 'AB-'), ('O+', 'O+'), ('O-', 'O-')],
+        validators=[DataRequired()]
+    )
     birthplace = StringField('Birthplace')
     marriage_status = SelectField('Marriage Status', choices=[('Single', 'Single'), ('Married', 'Married'), ('Divorced', 'Divorced'), ('Widowed', 'Widowed')])
     nationality_id = SelectField('Nationality', coerce=str, choices=[])
@@ -62,9 +74,21 @@ class PatientForm(FlaskForm):
     address = TextAreaField('Address')
     phone = StringField('Phone')
     email = StringField('Email', validators=[Email()])
-    id_type = SelectField('ID Type', choices=[], validators=[DataRequired()])
-    id_card_number = StringField('ID Card Number')
-    blood_type = SelectField('Blood Type', choices=[('A+', 'A+'), ('A-', 'A-'), ('B+', 'B+'), ('B-', 'B-'), ('AB+', 'AB+'), ('AB-', 'AB-'), ('O+', 'O+'), ('O-', 'O-')], validators=[DataRequired()])
+    id_type = SelectField(
+        'ID Type',
+        coerce=int,
+        validators=[DataRequired()]
+    )
+    id_card_number = StringField(
+        'ID Card Number',
+        validators=[DataRequired()]
+    )
+    blood_type = SelectField(
+        'Blood Type',
+        choices=[('A+', 'A+'), ('A-', 'A-'), ('B+', 'B+'), ('B-', 'B-'),
+                 ('AB+', 'AB+'), ('AB-', 'AB-'), ('O+', 'O+'), ('O-', 'O-')],
+        validators=[DataRequired()]
+    )
     birthplace = StringField('Birthplace')
     marriage_status = SelectField('Marriage Status', choices=[('Single', 'Single'), ('Married', 'Married'), ('Divorced', 'Divorced'), ('Widowed', 'Widowed')])
     nationality_id = SelectField('Nationality', coerce=str, choices=[])
@@ -85,7 +109,7 @@ class PatientForm(FlaskForm):
     emergency_contact_relationship = StringField('Emergency Contact Relationship')
     submit = SubmitField('Save Patient')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, db=None, **kwargs):
         super(PatientForm, self).__init__(*args, **kwargs)
         # Fetch nationalities from the API
         try:
@@ -99,14 +123,6 @@ class PatientForm(FlaskForm):
             self.nationality_id.choices = []
             print(f"Error fetching nationalities: {e}")
 
-        # Fetch ID types from system parameters
-        try:
-            response = requests.get(f"{current_app.config['API_BASE_URL']}/api/system_params?id_type")
-            if response.status_code == 200:
-                id_types = response.json()
-                self.id_type.choices = [(str(t['id']), t['name']) for t in id_types]
-            else:
-                self.id_type.choices = []
-        except Exception as e:
-            self.id_type.choices = []
-            print(f"Error fetching ID types: {e}")
+        # Set ID types
+        if db:
+            self.id_type.choices = get_id_types(db)

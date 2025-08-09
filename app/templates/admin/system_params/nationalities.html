@@ -1,7 +1,7 @@
 {% extends "admin/base.html" %}
 {% block content %}
   <h1>Manage Nationalities</h1>
-  <form method="POST" action="{{ url_for('admin.system_params.manage_nationalities') }}">
+  <form method="POST" action="{{ url_for('system_params.manage_nationalities') }}">
     {{ form.hidden_tag() }}
     <div class="form-group">
       {{ form.name.label }}

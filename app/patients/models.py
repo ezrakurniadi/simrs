@@ -23,10 +23,14 @@ class Patient(db.Model):
     nationality_id = db.Column(db.String(36), db.ForeignKey('nationality.id'), nullable=True)
     vip_status = db.Column(db.Boolean, default=False)
     problematic_patient = db.Column(db.Boolean, default=False)
+    problematic_patient_reason = db.Column(db.Text, nullable=True)
     loyalty_member = db.Column(db.Boolean, default=False)
+    loyalty_member_number = db.Column(db.String(50), nullable=True)
     ihs_number = db.Column(db.String(50), nullable=True)
     chronic_condition = db.Column(db.Boolean, default=False)
+    chronic_condition_details = db.Column(db.Text, nullable=True)
     allergy_alert = db.Column(db.Boolean, default=False)
+    allergy_alert_details = db.Column(db.Text, nullable=True)
     preferred_communication = db.Column(db.String(50), nullable=True)
     preferred_language = db.Column(db.String(50), nullable=True)
     emergency_contact_name = db.Column(db.String(100), nullable=True)
@@ -34,8 +38,14 @@ class Patient(db.Model):
     emergency_contact_relationship = db.Column(db.String(50), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     created_by = db.Column(db.String(50), nullable=True)
+    insurance_provider = db.Column(db.String(100), nullable=True)
+    is_deceased = db.Column(db.Boolean, default=False)
 
     nationality = db.relationship('Nationality', backref=db.backref('patients', lazy=True))
+
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
 
     def __repr__(self):
         return f'<Patient {self.first_name} {self.last_name}>'
@@ -97,14 +107,6 @@ class PatientUser(UserMixin, db.Model):
 
     def __repr__(self):
         return f'<PatientUser {self.username}>'
-    
-# Nationality model for patient registration
-class Nationality(db.Model):
-    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = db.Column(db.String(50), unique=True, nullable=False)
 
-    def __repr__(self):
-        return f'<Nationality {self.name}>'
-
-def get_all_nationalities():
-    return Nationality.query.all()
+# Import the get_all_nationalities function from system_params.models
+from app.system_params.models import get_all_nationalities

@@ -7,103 +7,423 @@
 
 <form method="POST" action="">
     {{ form.hidden_tag() }}
-    <div class="form-group">
-        {{ form.first_name.label }}
-        {{ form.first_name(class_="form-control") }}
+
+    <div class="row">
+        <!-- Personal Information Section -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title">Personal Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        {{ form.first_name.label(class="form-label") }}
+                        {{ form.first_name(class="form-control") }}
+                        {% if form.first_name.errors %}
+                            <div class="text-danger">
+                                {% for error in form.first_name.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.last_name.label(class="form-label") }}
+                        {{ form.last_name(class="form-control") }}
+                        {% if form.last_name.errors %}
+                            <div class="text-danger">
+                                {% for error in form.last_name.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.date_of_birth.label(class="form-label") }}
+                        {{ form.date_of_birth(class="form-control") }}
+                        {% if form.date_of_birth.errors %}
+                            <div class="text-danger">
+                                {% for error in form.date_of_birth.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.gender.label(class="form-label") }}
+                        {{ form.gender(class="form-select") }}
+                        {% if form.gender.errors %}
+                            <div class="text-danger">
+                                {% for error in form.gender.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.id_type.label(class="form-label") }}
+                        {{ form.id_type(class="form-select") }}
+                        {% if form.id_type.errors %}
+                            <div class="text-danger">
+                                {% for error in form.id_type.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.id_card_number.label(class="form-label") }}
+                        {{ form.id_card_number(class="form-control") }}
+                        {% if form.id_card_number.errors %}
+                            <div class="text-danger">
+                                {% for error in form.id_card_number.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.birthplace.label(class="form-label") }}
+                        {{ form.birthplace(class="form-control") }}
+                        {% if form.birthplace.errors %}
+                            <div class="text-danger">
+                                {% for error in form.birthplace.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.blood_type.label(class="form-label") }}
+                        {{ form.blood_type(class="form-select") }}
+                        {% if form.blood_type.errors %}
+                            <div class="text-danger">
+                                {% for error in form.blood_type.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.marriage_status.label(class="form-label") }}
+                        {{ form.marriage_status(class="form-select") }}
+                        {% if form.marriage_status.errors %}
+                            <div class="text-danger">
+                                {% for error in form.marriage_status.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Information Section -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title">Contact Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        {{ form.address.label(class="form-label") }}
+                        {{ form.address(class="form-control", rows="3") }}
+                        {% if form.address.errors %}
+                            <div class="text-danger">
+                                {% for error in form.address.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.phone.label(class="form-label") }}
+                        {{ form.phone(class="form-control") }}
+                        {% if form.phone.errors %}
+                            <div class="text-danger">
+                                {% for error in form.phone.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.email.label(class="form-label") }}
+                        {{ form.email(class="form-control") }}
+                        {% if form.email.errors %}
+                            <div class="text-danger">
+                                {% for error in form.email.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.preferred_communication.label(class="form-label") }}
+                        {{ form.preferred_communication(class="form-control") }}
+                        {% if form.preferred_communication.errors %}
+                            <div class="text-danger">
+                                {% for error in form.preferred_communication.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.preferred_language.label(class="form-label") }}
+                        {{ form.preferred_language(class="form-control") }}
+                        {% if form.preferred_language.errors %}
+                            <div class="text-danger">
+                                {% for error in form.preferred_language.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        {{ form.last_name.label }}
-        {{ form.last_name(class_="form-control") }}
+
+    <div class="row">
+        <!-- Emergency Contact Section -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title">Emergency Contact</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        {{ form.emergency_contact_name.label(class="form-label") }}
+                        {{ form.emergency_contact_name(class="form-control") }}
+                        {% if form.emergency_contact_name.errors %}
+                            <div class="text-danger">
+                                {% for error in form.emergency_contact_name.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.emergency_contact_phone.label(class="form-label") }}
+                        {{ form.emergency_contact_phone(class="form-control") }}
+                        {% if form.emergency_contact_phone.errors %}
+                            <div class="text-danger">
+                                {% for error in form.emergency_contact_phone.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.emergency_contact_relationship.label(class="form-label") }}
+                        {{ form.emergency_contact_relationship(class="form-control") }}
+                        {% if form.emergency_contact_relationship.errors %}
+                            <div class="text-danger">
+                                {% for error in form.emergency_contact_relationship.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insurance Information Section -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title">Insurance Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        {{ form.insurance_provider.label(class="form-label") }}
+                        {{ form.insurance_provider(class="form-control") }}
+                        {% if form.insurance_provider.errors %}
+                            <div class="text-danger">
+                                {% for error in form.insurance_provider.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        {{ form.date_of_birth.label }}
-        {{ form.date_of_birth(class_="form-control") }}
+
+    <div class="row">
+        <!-- Status Section -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title">Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        {{ form.is_deceased.label(class="form-label") }}
+                        {{ form.is_deceased(class="form-select") }}
+                        {% if form.is_deceased.errors %}
+                            <div class="text-danger">
+                                {% for error in form.is_deceased.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.vip_status.label(class="form-label") }}
+                        {{ form.vip_status(class="form-select") }}
+                        {% if form.vip_status.errors %}
+                            <div class="text-danger">
+                                {% for error in form.vip_status.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.problematic_patient.label(class="form-label") }}
+                        {{ form.problematic_patient(class="form-select") }}
+                        {% if form.problematic_patient.errors %}
+                            <div class="text-danger">
+                                {% for error in form.problematic_patient.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3" id="problematic_patient_reason_field" style="display: none;">
+                        {{ form.problematic_patient_reason.label(class="form-label") }}
+                        {{ form.problematic_patient_reason(class="form-control") }}
+                        {% if form.problematic_patient_reason.errors %}
+                            <div class="text-danger">
+                                {% for error in form.problematic_patient_reason.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.loyalty_member.label(class="form-label") }}
+                        {{ form.loyalty_member(class="form-select") }}
+                        {% if form.loyalty_member.errors %}
+                            <div class="text-danger">
+                                {% for error in form.loyalty_member.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3" id="loyalty_member_number_field" style="display: none;">
+                        {{ form.loyalty_member_number.label(class="form-label") }}
+                        {{ form.loyalty_member_number(class="form-control") }}
+                        {% if form.loyalty_member_number.errors %}
+                            <div class="text-danger">
+                                {% for error in form.loyalty_member_number.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.chronic_condition.label(class="form-label") }}
+                        {{ form.chronic_condition(class="form-select") }}
+                        {% if form.chronic_condition.errors %}
+                            <div class="text-danger">
+                                {% for error in form.chronic_condition.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3" id="chronic_condition_details_field" style="display: none;">
+                        {{ form.chronic_condition_details.label(class="form-label") }}
+                        {{ form.chronic_condition_details(class="form-control") }}
+                        {% if form.chronic_condition_details.errors %}
+                            <div class="text-danger">
+                                {% for error in form.chronic_condition_details.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.allergy_alert.label(class="form-label") }}
+                        {{ form.allergy_alert(class="form-select") }}
+                        {% if form.allergy_alert.errors %}
+                            <div class="text-danger">
+                                {% for error in form.allergy_alert.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3" id="allergy_alert_details_field" style="display: none;">
+                        {{ form.allergy_alert_details.label(class="form-label") }}
+                        {{ form.allergy_alert_details(class="form-control") }}
+                        {% if form.allergy_alert_details.errors %}
+                            <div class="text-danger">
+                                {% for error in form.allergy_alert_details.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        {{ form.gender.label }}
-        {{ form.gender(class_="form-control") }}
+
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="{{ url_for('patients.index') }}" class="btn btn-secondary">Cancel</a>
     </div>
-    <div class="form-group">
-        {{ form.address.label }}
-        {{ form.address(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.phone.label }}
-        {{ form.phone(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.email.label }}
-        {{ form.email(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.id_type.label }}
-        {{ form.id_type(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.id_card_number.label }}
-        {{ form.id_card_number(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.blood_type.label }}
-        {{ form.blood_type(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.birthplace.label }}
-        {{ form.birthplace(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.marriage_status.label }}
-        {{ form.marriage_status(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.nationality.label }}
-        {{ form.nationality(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.vip_status.label }}
-        {{ form.vip_status(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.problematic_patient.label }}
-        {{ form.problematic_patient(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.loyalty_member.label }}
-        {{ form.loyalty_member(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.ihs_number.label }}
-        {{ form.ihs_number(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.chronic_condition.label }}
-        {{ form.chronic_condition(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.allergy_alert.label }}
-        {{ form.allergy_alert(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.preferred_communication_method.label }}
-        {{ form.preferred_communication_method(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.preferred_language.label }}
-        {{ form.preferred_language(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.emergency_contact_name.label }}
-        {{ form.emergency_contact_name(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.emergency_contact_phone.label }}
-        {{ form.emergency_contact_phone(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.emergency_contact_relationship.label }}
-        {{ form.emergency_contact_relationship(class_="form-control") }}
-    </div>
-    <button type="submit" class="btn btn-primary">Save Changes</button>
-    <a href="{{ url_for('patients.index') }}" class="btn btn-secondary">Cancel</a>
 </form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const problematicPatientField = document.querySelector('select[name="problematic_patient"]');
+    const problematicPatientReasonField = document.getElementById('problematic_patient_reason_field');
+    const loyaltyMemberField = document.querySelector('select[name="loyalty_member"]');
+    const loyaltyMemberNumberField = document.getElementById('loyalty_member_number_field');
+    const chronicConditionField = document.querySelector('select[name="chronic_condition"]');
+    const chronicConditionDetailsField = document.getElementById('chronic_condition_details_field');
+    const allergyAlertField = document.querySelector('select[name="allergy_alert"]');
+    const allergyAlertDetailsField = document.getElementById('allergy_alert_details_field');
+
+    function toggleFieldVisibility(field, targetField) {
+        if (field.value === 'True') {
+            targetField.style.display = 'block';
+        } else {
+            targetField.style.display = 'none';
+        }
+    }
+
+    // Initial setup
+    toggleFieldVisibility(problematicPatientField, problematicPatientReasonField);
+    toggleFieldVisibility(loyaltyMemberField, loyaltyMemberNumberField);
+    toggleFieldVisibility(chronicConditionField, chronicConditionDetailsField);
+    toggleFieldVisibility(allergyAlertField, allergyAlertDetailsField);
+
+    // Event listeners
+    problematicPatientField.addEventListener('change', function() {
+        toggleFieldVisibility(problematicPatientField, problematicPatientReasonField);
+    });
+
+    loyaltyMemberField.addEventListener('change', function() {
+        toggleFieldVisibility(loyaltyMemberField, loyaltyMemberNumberField);
+    });
+
+    chronicConditionField.addEventListener('change', function() {
+        toggleFieldVisibility(chronicConditionField, chronicConditionDetailsField);
+    });
+
+    allergyAlertField.addEventListener('change', function() {
+        toggleFieldVisibility(allergyAlertField, allergyAlertDetailsField);
+    });
+});
+</script>
 {% endblock %}
