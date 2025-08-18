@@ -1,0 +1,139 @@
+/* Patient Registration Form Styles */
+
+/* Base styles for the form grid */
+.patient-registration-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Card styles */
+.card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 2px;
+}
+
+.card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.card-header {
+  padding: 1rem 1.25rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  border-radius: 8px 8px 0 0;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.card-body {
+  padding: 1.25rem;
+  flex: 1;
+  margin-bottom: 2px;
+}
+
+/* Form controls */
+.form-controls {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid #e9ecef;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .patient-registration-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-controls {
+    flex-direction: column;
+  }
+  
+  .form-controls .btn {
+    width: 100%;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  .patient-registration-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1201px) {
+  .patient-registration-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Accessibility enhancements */
+.card:focus-within {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Conditional field styling */
+.hidden-field {
+  display: none;
+}
+
+.visible-field {
+  display: block;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Error handling */
+.is-invalid {
+  border-color: #dc3545;
+}
+
+.invalid-feedback {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.875em;
+  color: #dc3545;
+}
+
+/* Payor information section styles */
+.payor-info-section .form-select {
+  margin-bottom: 1rem;
+}
+
+.payor-info-section .form-label {
+  font-weight: 600;
+  color: #495057;
+}
+
+/* Dynamic dropdown styles */
+#payor-detail:disabled {
+  background-color: #e9ecef;
+  opacity: 0.7;
+}
+
+/* Responsive adjustments for payor section */
+@media (max-width: 768px) {
+  .payor-info-section .form-select {
+    margin-bottom: 0.75rem;
+  }
+}

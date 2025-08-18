@@ -48,7 +48,7 @@ The current template at `app/templates/patients/new.html` only includes basic fi
 
 ## Updated Template Code
 
-The updated template should match the "Updated Template" section in `patient_template_changes.md`:
+The updated template should match the "Updated Template" section in [docs/patient_template_changes.md](patient_template_changes.md):
 
 ```html
 {% extends "base.html" %}

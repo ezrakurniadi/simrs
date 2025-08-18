@@ -55,6 +55,7 @@
     <div class="row">
       <div class="col-md-6">
         <p><strong>ID:</strong> {{ patient.id }}</p>
+        <p><strong>Medical Record Number (MRN):</strong> {{ patient.mrn or 'N/A' }}</p>
         <p><strong>First Name:</strong> {{ patient.first_name }}</p>
         <p><strong>Last Name:</strong> {{ patient.last_name }}</p>
         <p><strong>Date of Birth:</strong> {{ patient.date_of_birth.strftime('%Y-%m-%d') if patient.date_of_birth else 'N/A' }}</p>
@@ -88,6 +89,16 @@
          <p><strong>Preferred Communication:</strong> {{ patient.preferred_communication or 'N/A' }}</p>
          <p><strong>Preferred Language:</strong> {{ patient.preferred_language or 'N/A' }}</p>
          <p><strong>Emergency Contact:</strong> {{ patient.emergency_contact or 'N/A' }}</p>
+         <p><strong>Payor Type:</strong> {{ patient.payor_type or 'N/A' }}</p>
+         <p><strong>Payor Detail:</strong> {{ patient.payor_detail or 'N/A' }}</p>
+         <p><strong>Insurance Policy ID:</strong> {{ patient.insurance_policy_id or 'N/A' }}</p>
+         <p><strong>Insurance Group Number:</strong> {{ patient.insurance_group_number or 'N/A' }}</p>
+         <p><strong>Guarantor Name:</strong> {{ patient.guarantor_name or 'N/A' }}</p>
+         <p><strong>Guarantor Relationship:</strong> {{ patient.guarantor_relationship or 'N/A' }}</p>
+         <p><strong>Guarantor Phone:</strong> {{ patient.guarantor_phone or 'N/A' }}</p>
+         <p><strong>Guarantor Address:</strong> {{ patient.guarantor_address or 'N/A' }}</p>
+         <p><strong>Consent to Treat:</strong> {{ 'Yes' if patient.consent_to_treat else 'No' if patient.consent_to_treat is not none else 'N/A' }}</p>
+         <p><strong>Privacy Practices Acknowledged:</strong> {{ 'Yes' if patient.privacy_practices_acknowledged else 'No' if patient.privacy_practices_acknowledged is not none else 'N/A' }}</p>
        </div>
      </div>
     

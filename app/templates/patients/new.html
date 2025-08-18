@@ -2,427 +2,963 @@
 
 {% block title %}Register New Patient{% endblock %}
 
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/patient-registration.css') }}">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+{% endblock %}
+
 {% block content %}
 <h1>Register New Patient</h1>
 
-<form method="POST" action="{{ url_for('patients.create_patient') }}">
+<form method="POST" action="{{ url_for('patients.create_patient') }}" novalidate>
     {{ form.hidden_tag() }}
 
-    <div class="row">
+    <div class="patient-registration-grid" role="form" aria-labelledby="form-title">
+        <div id="form-title" class="visually-hidden">Patient Registration Form</div>
+        
         <!-- Personal Information Section -->
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="card-title">Personal Information</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        {{ form.first_name.label(class="form-label") }}
-                        {{ form.first_name(class="form-control") }}
+        <section class="card personal-info-section" aria-labelledby="personal-info-heading">
+            <div class="card-header">
+                <h2 id="personal-info-heading" class="card-title">Personal Information</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    {{ form.first_name.label(class="form-label", required="required") }}
+                    <div class="input-group">
                         {% if form.first_name.errors %}
-                            <div class="text-danger">
+                            {{ form.first_name(class="form-control", class_="form-control is-invalid") }}
+                            <div class="invalid-feedback">
                                 {% for error in form.first_name.errors %}
-                                    <small>{{ error }}</small>
+                                    <p>{{ error }}</p>
                                 {% endfor %}
                             </div>
+                        {% else %}
+                            {{ form.first_name(class="form-control") }}
                         {% endif %}
                     </div>
-                    <div class="mb-3">
-                        {{ form.last_name.label(class="form-label") }}
-                        {{ form.last_name(class="form-control") }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.last_name.label(class="form-label", required="required") }}
+                    <div class="input-group">
                         {% if form.last_name.errors %}
-                            <div class="text-danger">
+                            {{ form.last_name(class="form-control", class_="form-control is-invalid") }}
+                            <div class="invalid-feedback">
                                 {% for error in form.last_name.errors %}
-                                    <small>{{ error }}</small>
+                                    <p>{{ error }}</p>
                                 {% endfor %}
                             </div>
+                        {% else %}
+                            {{ form.last_name(class="form-control") }}
                         {% endif %}
                     </div>
-                    <div class="mb-3">
-                        {{ form.date_of_birth.label(class="form-label") }}
-                        {{ form.date_of_birth(class="form-control") }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.date_of_birth.label(class="form-label", required="required") }}
+                    <div class="input-group">
                         {% if form.date_of_birth.errors %}
-                            <div class="text-danger">
+                            {{ form.date_of_birth(class="form-control", class_="form-control is-invalid", type="date") }}
+                            <div class="invalid-feedback">
                                 {% for error in form.date_of_birth.errors %}
-                                    <small>{{ error }}</small>
+                                    <p>{{ error }}</p>
                                 {% endfor %}
                             </div>
+                        {% else %}
+                            {{ form.date_of_birth(class="form-control", type="date") }}
                         {% endif %}
                     </div>
-                    <div class="mb-3">
-                        {{ form.gender.label(class="form-label") }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.gender.label(class="form-label", required="required") }}
+                    {% if form.gender.errors %}
+                        {{ form.gender(class="form-select", class_="form-select is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.gender.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
                         {{ form.gender(class="form-select") }}
-                        {% if form.gender.errors %}
-                            <div class="text-danger">
-                                {% for error in form.gender.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.id_type.label(class="form-label") }}
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.id_type.label(class="form-label", required="required") }}
+                    {% if form.id_type.errors %}
+                        {{ form.id_type(class="form-select", class_="form-select is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.id_type.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
                         {{ form.id_type(class="form-select") }}
-                        {% if form.id_type.errors %}
-                            <div class="text-danger">
-                                {% for error in form.id_type.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.id_card_number.label(class="form-label") }}
-                        {{ form.id_card_number(class="form-control") }}
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.id_card_number.label(class="form-label", required="required") }}
+                    <div class="input-group">
                         {% if form.id_card_number.errors %}
-                            <div class="text-danger">
+                            {{ form.id_card_number(class="form-control", class_="form-control is-invalid") }}
+                            <div class="invalid-feedback">
                                 {% for error in form.id_card_number.errors %}
-                                    <small>{{ error }}</small>
+                                    <p>{{ error }}</p>
                                 {% endfor %}
                             </div>
+                        {% else %}
+                            {{ form.id_card_number(class="form-control") }}
                         {% endif %}
                     </div>
-                    <div class="mb-3">
-                        {{ form.birthplace.label(class="form-label") }}
-                        {{ form.birthplace(class="form-control") }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.birthplace.label(class="form-label") }}
+                    <div class="input-group">
                         {% if form.birthplace.errors %}
-                            <div class="text-danger">
+                            {{ form.birthplace(class="form-control", class_="form-control is-invalid") }}
+                            <div class="invalid-feedback">
                                 {% for error in form.birthplace.errors %}
-                                    <small>{{ error }}</small>
+                                    <p>{{ error }}</p>
                                 {% endfor %}
                             </div>
+                        {% else %}
+                            {{ form.birthplace(class="form-control") }}
                         {% endif %}
                     </div>
-                    <div class="mb-3">
-                        {{ form.blood_type.label(class="form-label") }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.blood_type.label(class="form-label") }}
+                    {% if form.blood_type.errors %}
+                        {{ form.blood_type(class="form-select", class_="form-select is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.blood_type.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
                         {{ form.blood_type(class="form-select") }}
-                        {% if form.blood_type.errors %}
-                            <div class="text-danger">
-                                {% for error in form.blood_type.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.marriage_status.label(class="form-label") }}
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.marriage_status.label(class="form-label") }}
+                    {% if form.marriage_status.errors %}
+                        {{ form.marriage_status(class="form-select", class_="form-select is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.marriage_status.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
                         {{ form.marriage_status(class="form-select") }}
-                        {% if form.marriage_status.errors %}
-                            <div class="text-danger">
-                                {% for error in form.marriage_status.errors %}
-                                    <small>{{ error }}</small>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.mrn.label(class="form-label") }}
+                    <div class="input-group">
+                        {% if form.mrn.errors %}
+                            {{ form.mrn(class="form-control", class_="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.mrn.errors %}
+                                    <p>{{ error }}</p>
                                 {% endfor %}
                             </div>
+                        {% else %}
+                            {{ form.mrn(class="form-control") }}
                         {% endif %}
                     </div>
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.race.label(class="form-label") }}
+                    {% if form.race.errors %}
+                        {{ form.race(class="form-select", class_="form-select is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.race.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.race(class="form-select") }}
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.ethnicity.label(class="form-label") }}
+                    {% if form.ethnicity.errors %}
+                        {{ form.ethnicity(class="form-select", class_="form-select is-invalid", id="ethnicity") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.ethnicity.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.ethnicity(class="form-select", id="ethnicity") }}
+                    {% endif %}
                 </div>
             </div>
-        </div>
+        </section>
 
         <!-- Contact Information Section -->
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="card-title">Contact Information</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        {{ form.address.label(class="form-label") }}
-                        {{ form.address(class="form-control", rows="3") }}
+        <section class="card contact-info-section" aria-labelledby="contact-info-heading">
+            <div class="card-header">
+                <h2 id="contact-info-heading" class="card-title">Contact Information</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    {{ form.address.label(class="form-label", required="required") }}
+                    <div class="input-group">
                         {% if form.address.errors %}
-                            <div class="text-danger">
+                            {{ form.address(class="form-control", class_="form-control is-invalid", rows="3") }}
+                            <div class="invalid-feedback">
                                 {% for error in form.address.errors %}
-                                    <small>{{ error }}</small>
+                                    <p>{{ error }}</p>
                                 {% endfor %}
                             </div>
+                        {% else %}
+                            {{ form.address(class="form-control", rows="3") }}
                         {% endif %}
                     </div>
-                    <div class="mb-3">
-                        {{ form.phone.label(class="form-label") }}
-                        {{ form.phone(class="form-control") }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.phone.label(class="form-label", required="required") }}
+                    <div class="input-group">
                         {% if form.phone.errors %}
-                            <div class="text-danger">
+                            {{ form.phone(class="form-control", class_="form-control is-invalid", type="tel") }}
+                            <div class="invalid-feedback">
                                 {% for error in form.phone.errors %}
-                                    <small>{{ error }}</small>
+                                    <p>{{ error }}</p>
                                 {% endfor %}
                             </div>
+                        {% else %}
+                            {{ form.phone(class="form-control", type="tel") }}
                         {% endif %}
                     </div>
-                    <div class="mb-3">
-                        {{ form.email.label(class="form-label") }}
-                        {{ form.email(class="form-control") }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.email.label(class="form-label") }}
+                    <div class="input-group">
                         {% if form.email.errors %}
-                            <div class="text-danger">
+                            {{ form.email(class="form-control", class_="form-control is-invalid", type="email") }}
+                            <div class="invalid-feedback">
                                 {% for error in form.email.errors %}
-                                    <small>{{ error }}</small>
+                                    <p>{{ error }}</p>
                                 {% endfor %}
                             </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.preferred_communication.label(class="form-label") }}
-                        {{ form.preferred_communication(class="form-control") }}
-                        {% if form.preferred_communication.errors %}
-                            <div class="text-danger">
-                                {% for error in form.preferred_communication.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.preferred_language.label(class="form-label") }}
-                        {{ form.preferred_language(class="form-control") }}
-                        {% if form.preferred_language.errors %}
-                            <div class="text-danger">
-                                {% for error in form.preferred_language.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
+                        {% else %}
+                            {{ form.email(class="form-control", type="email") }}
                         {% endif %}
                     </div>
                 </div>
+                
+                <div class="mb-3">
+                    {{ form.preferred_communication.label(class="form-label") }}
+                    {% if form.preferred_communication.errors %}
+                        {{ form.preferred_communication(class="form-select", class_="form-select is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.preferred_communication.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.preferred_communication(class="form-select") }}
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.preferred_language.label(class="form-label") }}
+                    {% if form.preferred_language.errors %}
+                        {{ form.preferred_language(class="form-select", class_="form-select is-invalid", id="preferred_language") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.preferred_language.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.preferred_language(class="form-select", id="preferred_language") }}
+                    {% endif %}
+                </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <div class="row">
         <!-- Emergency Contact Section -->
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="card-title">Emergency Contact</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        {{ form.emergency_contact_name.label(class="form-label") }}
-                        {{ form.emergency_contact_name(class="form-control") }}
+        <section class="card emergency-contact-section" aria-labelledby="emergency-contact-heading">
+            <div class="card-header">
+                <h2 id="emergency-contact-heading" class="card-title">Emergency Contact</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    {{ form.emergency_contact_name.label(class="form-label", required="required") }}
+                    <div class="input-group">
                         {% if form.emergency_contact_name.errors %}
-                            <div class="text-danger">
+                            {{ form.emergency_contact_name(class="form-control", class_="form-control is-invalid") }}
+                            <div class="invalid-feedback">
                                 {% for error in form.emergency_contact_name.errors %}
-                                    <small>{{ error }}</small>
+                                    <p>{{ error }}</p>
                                 {% endfor %}
                             </div>
+                        {% else %}
+                            {{ form.emergency_contact_name(class="form-control") }}
                         {% endif %}
                     </div>
-                    <div class="mb-3">
-                        {{ form.emergency_contact_phone.label(class="form-label") }}
-                        {{ form.emergency_contact_phone(class="form-control") }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.emergency_contact_phone.label(class="form-label", required="required") }}
+                    <div class="input-group">
                         {% if form.emergency_contact_phone.errors %}
-                            <div class="text-danger">
+                            {{ form.emergency_contact_phone(class="form-control", class_="form-control is-invalid", type="tel") }}
+                            <div class="invalid-feedback">
                                 {% for error in form.emergency_contact_phone.errors %}
-                                    <small>{{ error }}</small>
+                                    <p>{{ error }}</p>
                                 {% endfor %}
                             </div>
+                        {% else %}
+                            {{ form.emergency_contact_phone(class="form-control", type="tel") }}
                         {% endif %}
                     </div>
-                    <div class="mb-3">
-                        {{ form.emergency_contact_relationship.label(class="form-label") }}
-                        {{ form.emergency_contact_relationship(class="form-control") }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.emergency_contact_relationship.label(class="form-label", required="required") }}
+                    <div class="input-group">
                         {% if form.emergency_contact_relationship.errors %}
-                            <div class="text-danger">
+                            {{ form.emergency_contact_relationship(class="form-control", class_="form-control is-invalid") }}
+                            <div class="invalid-feedback">
                                 {% for error in form.emergency_contact_relationship.errors %}
-                                    <small>{{ error }}</small>
+                                    <p>{{ error }}</p>
                                 {% endfor %}
                             </div>
+                        {% else %}
+                            {{ form.emergency_contact_relationship(class="form-control") }}
                         {% endif %}
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Insurance Information Section -->
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="card-title">Insurance Information</h5>
+        <!-- Payor Information Section -->
+        <section class="card payor-info-section" aria-labelledby="payor-info-heading">
+            <div class="card-header">
+                <h2 id="payor-info-heading" class="card-title">Payor Information</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    {{ form.payor_type.label(class="form-label") }}
+                    {% if form.payor_type.errors %}
+                        {{ form.payor_type(class="form-select", class_="form-select is-invalid", id="payor-type") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.payor_type.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.payor_type(class="form-select", id="payor-type") }}
+                    {% endif %}
                 </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        {{ form.insurance_provider.label(class="form-label") }}
-                        {{ form.insurance_provider(class="form-control") }}
-                        {% if form.insurance_provider.errors %}
-                            <div class="text-danger">
-                                {% for error in form.insurance_provider.errors %}
-                                    <small>{{ error }}</small>
+                
+                <div class="mb-3">
+                    {{ form.payor_detail.label(class="form-label") }}
+                    {% if form.payor_detail.errors %}
+                        {{ form.payor_detail(class="form-select", class_="form-select is-invalid", id="payor-detail") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.payor_detail.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.payor_detail(class="form-select", id="payor-detail") }}
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.insurance_policy_id.label(class="form-label") }}
+                    <div class="input-group">
+                        {% if form.insurance_policy_id.errors %}
+                            {{ form.insurance_policy_id(class="form-control", class_="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.insurance_policy_id.errors %}
+                                    <p>{{ error }}</p>
                                 {% endfor %}
                             </div>
+                        {% else %}
+                            {{ form.insurance_policy_id(class="form-control") }}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.insurance_group_number.label(class="form-label") }}
+                    <div class="input-group">
+                        {% if form.insurance_group_number.errors %}
+                            {{ form.insurance_group_number(class="form-control", class_="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.insurance_group_number.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.insurance_group_number(class="form-control") }}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.guarantor_name.label(class="form-label") }}
+                    <div class="input-group">
+                        {% if form.guarantor_name.errors %}
+                            {{ form.guarantor_name(class="form-control", class_="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.guarantor_name.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.guarantor_name(class="form-control") }}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.guarantor_relationship.label(class="form-label") }}
+                    <div class="input-group">
+                        {% if form.guarantor_relationship.errors %}
+                            {{ form.guarantor_relationship(class="form-control", class_="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.guarantor_relationship.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.guarantor_relationship(class="form-control") }}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.guarantor_phone.label(class="form-label") }}
+                    <div class="input-group">
+                        {% if form.guarantor_phone.errors %}
+                            {{ form.guarantor_phone(class="form-control", class_="form-control is-invalid", type="tel") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.guarantor_phone.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.guarantor_phone(class="form-control", type="tel") }}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.guarantor_address.label(class="form-label") }}
+                    <div class="input-group">
+                        {% if form.guarantor_address.errors %}
+                            {{ form.guarantor_address(class="form-control", class_="form-control is-invalid", rows="3") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.guarantor_address.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.guarantor_address(class="form-control", rows="3") }}
                         {% endif %}
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <div class="row">
         <!-- Status Section -->
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="card-title">Status</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        {{ form.is_deceased.label(class="form-label") }}
+        <section class="card status-section" aria-labelledby="status-heading">
+            <div class="card-header">
+                <h2 id="status-heading" class="card-title">Status</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    {{ form.is_deceased.label(class="form-label") }}
+                    {% if form.is_deceased.errors %}
+                        {{ form.is_deceased(class="form-select", class_="form-select is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.is_deceased.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
                         {{ form.is_deceased(class="form-select") }}
-                        {% if form.is_deceased.errors %}
-                            <div class="text-danger">
-                                {% for error in form.is_deceased.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.vip_status.label(class="form-label") }}
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.vip_status.label(class="form-label") }}
+                    {% if form.vip_status.errors %}
+                        {{ form.vip_status(class="form-select", class_="form-select is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.vip_status.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
                         {{ form.vip_status(class="form-select") }}
-                        {% if form.vip_status.errors %}
-                            <div class="text-danger">
-                                {% for error in form.vip_status.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.problematic_patient.label(class="form-label") }}
-                        {{ form.problematic_patient(class="form-select") }}
-                        {% if form.problematic_patient.errors %}
-                            <div class="text-danger">
-                                {% for error in form.problematic_patient.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3" id="problematic_patient_reason_field" style="display: none;">
-                        {{ form.problematic_patient_reason.label(class="form-label") }}
-                        {{ form.problematic_patient_reason(class="form-control") }}
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.problematic_patient.label(class="form-label") }}
+                    {% if form.problematic_patient.errors %}
+                        {{ form.problematic_patient(class="form-select", class_="form-select is-invalid", data_target_field="problematic_patient_reason_field") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.problematic_patient.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.problematic_patient(class="form-select", data_target_field="problematic_patient_reason_field") }}
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3" id="problematic_patient_reason_field" style="display: none;">
+                    {{ form.problematic_patient_reason.label(class="form-label", required="required") }}
+                    <div class="input-group">
                         {% if form.problematic_patient_reason.errors %}
-                            <div class="text-danger">
+                            {{ form.problematic_patient_reason(class="form-control", class_="form-control is-invalid") }}
+                            <div class="invalid-feedback">
                                 {% for error in form.problematic_patient_reason.errors %}
-                                    <small>{{ error }}</small>
+                                    <p>{{ error }}</p>
                                 {% endfor %}
                             </div>
+                        {% else %}
+                            {{ form.problematic_patient_reason(class="form-control") }}
                         {% endif %}
                     </div>
-                    <div class="mb-3">
-                        {{ form.loyalty_member.label(class="form-label") }}
-                        {{ form.loyalty_member(class="form-select") }}
-                        {% if form.loyalty_member.errors %}
-                            <div class="text-danger">
-                                {% for error in form.loyalty_member.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3" id="loyalty_member_number_field" style="display: none;">
-                        {{ form.loyalty_member_number.label(class="form-label") }}
-                        {{ form.loyalty_member_number(class="form-control") }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.loyalty_member.label(class="form-label") }}
+                    {% if form.loyalty_member.errors %}
+                        {{ form.loyalty_member(class="form-select", class_="form-select is-invalid", data_target_field="loyalty_member_number_field") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.loyalty_member.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.loyalty_member(class="form-select", data_target_field="loyalty_member_number_field") }}
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3" id="loyalty_member_number_field" style="display: none;">
+                    {{ form.loyalty_member_number.label(class="form-label", required="required") }}
+                    <div class="input-group">
                         {% if form.loyalty_member_number.errors %}
-                            <div class="text-danger">
+                            {{ form.loyalty_member_number(class="form-control", class_="form-control is-invalid") }}
+                            <div class="invalid-feedback">
                                 {% for error in form.loyalty_member_number.errors %}
-                                    <small>{{ error }}</small>
+                                    <p>{{ error }}</p>
                                 {% endfor %}
                             </div>
+                        {% else %}
+                            {{ form.loyalty_member_number(class="form-control") }}
                         {% endif %}
                     </div>
-                    <div class="mb-3">
-                        {{ form.chronic_condition.label(class="form-label") }}
-                        {{ form.chronic_condition(class="form-select") }}
-                        {% if form.chronic_condition.errors %}
-                            <div class="text-danger">
-                                {% for error in form.chronic_condition.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3" id="chronic_condition_details_field" style="display: none;">
-                        {{ form.chronic_condition_details.label(class="form-label") }}
-                        {{ form.chronic_condition_details(class="form-control") }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.chronic_condition.label(class="form-label") }}
+                    {% if form.chronic_condition.errors %}
+                        {{ form.chronic_condition(class="form-select", class_="form-select is-invalid", data_target_field="chronic_condition_details_field") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.chronic_condition.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.chronic_condition(class="form-select", data_target_field="chronic_condition_details_field") }}
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3" id="chronic_condition_details_field" style="display: none;">
+                    {{ form.chronic_condition_details.label(class="form-label", required="required") }}
+                    <div class="input-group">
                         {% if form.chronic_condition_details.errors %}
-                            <div class="text-danger">
+                            {{ form.chronic_condition_details(class="form-control", class_="form-control is-invalid") }}
+                            <div class="invalid-feedback">
                                 {% for error in form.chronic_condition_details.errors %}
-                                    <small>{{ error }}</small>
+                                    <p>{{ error }}</p>
                                 {% endfor %}
                             </div>
+                        {% else %}
+                            {{ form.chronic_condition_details(class="form-control") }}
                         {% endif %}
                     </div>
-                    <div class="mb-3">
-                        {{ form.allergy_alert.label(class="form-label") }}
-                        {{ form.allergy_alert(class="form-select") }}
-                        {% if form.allergy_alert.errors %}
-                            <div class="text-danger">
-                                {% for error in form.allergy_alert.errors %}
-                                    <small>{{ error }}</small>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3" id="allergy_alert_details_field" style="display: none;">
-                        {{ form.allergy_alert_details.label(class="form-label") }}
-                        {{ form.allergy_alert_details(class="form-control") }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.allergy_alert.label(class="form-label") }}
+                    {% if form.allergy_alert.errors %}
+                        {{ form.allergy_alert(class="form-select", class_="form-select is-invalid", data_target_field="allergy_alert_details_field") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.allergy_alert.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.allergy_alert(class="form-select", data_target_field="allergy_alert_details_field") }}
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3" id="allergy_alert_details_field" style="display: none;">
+                    {{ form.allergy_alert_details.label(class="form-label", required="required") }}
+                    <div class="input-group">
                         {% if form.allergy_alert_details.errors %}
-                            <div class="text-danger">
+                            {{ form.allergy_alert_details(class="form-control", class_="form-control is-invalid") }}
+                            <div class="invalid-feedback">
                                 {% for error in form.allergy_alert_details.errors %}
-                                    <small>{{ error }}</small>
+                                    <p>{{ error }}</p>
                                 {% endfor %}
                             </div>
+                        {% else %}
+                            {{ form.allergy_alert_details(class="form-control") }}
                         {% endif %}
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <div class="mb-3">
-        {{ form.submit(class="btn btn-primary") }}
-        <a href="{{ url_for('patients.index') }}" class="btn btn-secondary">Cancel</a>
+        <!-- Consent and Privacy Section -->
+        <section class="card consent-privacy-section" aria-labelledby="consent-privacy-heading">
+            <div class="card-header">
+                <h2 id="consent-privacy-heading" class="card-title">Consent and Privacy</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    {{ form.consent_to_treat.label(class="form-label", required="required") }}
+                    {% if form.consent_to_treat.errors %}
+                        {{ form.consent_to_treat(class="form-select", class_="form-select is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.consent_to_treat.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.consent_to_treat(class="form-select") }}
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.privacy_practices_acknowledged.label(class="form-label", required="required") }}
+                    {% if form.privacy_practices_acknowledged.errors %}
+                        {{ form.privacy_practices_acknowledged(class="form-select", class_="form-select is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.privacy_practices_acknowledged.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.privacy_practices_acknowledged(class="form-select") }}
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <div class="form-controls">
+            {{ form.submit(class="btn btn-primary", aria_label="Register Patient") }}
+            <a href="{{ url_for('patients.index') }}" class="btn btn-secondary" role="button">Cancel</a>
+        </div>
     </div>
 </form>
 
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const problematicPatientField = document.querySelector('select[name="problematic_patient"]');
-    const problematicPatientReasonField = document.getElementById('problematic_patient_reason_field');
-    const loyaltyMemberField = document.querySelector('select[name="loyalty_member"]');
-    const loyaltyMemberNumberField = document.getElementById('loyalty_member_number_field');
-    const chronicConditionField = document.querySelector('select[name="chronic_condition"]');
-    const chronicConditionDetailsField = document.getElementById('chronic_condition_details_field');
-    const allergyAlertField = document.querySelector('select[name="allergy_alert"]');
-    const allergyAlertDetailsField = document.getElementById('allergy_alert_details_field');
-
+    // Accessibility enhancements
+    const form = document.querySelector('form');
+    form.setAttribute('novalidate', '');
+    
+    // Add ARIA attributes to form controls
+    const formControls = form.querySelectorAll('input, select, textarea');
+    formControls.forEach(control => {
+        if (!control.hasAttribute('aria-label') && !control.hasAttribute('aria-labelledby')) {
+            const label = form.querySelector(`label[for="${control.id}"]`);
+            if (label) {
+                control.setAttribute('aria-labelledby', label.id);
+            }
+        }
+    });
+    
+    // Fetch ID types from API
+    fetch('/api/id-types')
+        .then(response => response.json())
+        .then(data => {
+            const idTypeSelect = document.getElementById('id_type');
+            // Clear existing options except the first one
+            while (idTypeSelect.options.length > 1) {
+                idTypeSelect.remove(1);
+            }
+            // Add ID types from API
+            data.forEach(function(idType) {
+                const option = document.createElement('option');
+                option.value = idType.name;
+                option.textContent = idType.name;
+                idTypeSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching ID types:', error);
+        });
+    
+    // Enhanced conditional field visibility with ARIA
     function toggleFieldVisibility(field, targetField) {
         if (field.value === 'True') {
             targetField.style.display = 'block';
+            targetField.setAttribute('aria-hidden', 'false');
+            // Focus the first input in the revealed field
+            const firstInput = targetField.querySelector('input, select, textarea');
+            if (firstInput) {
+                firstInput.focus();
+            }
         } else {
             targetField.style.display = 'none';
+            targetField.setAttribute('aria-hidden', 'true');
         }
     }
-
-    // Initial setup
-    toggleFieldVisibility(problematicPatientField, problematicPatientReasonField);
-    toggleFieldVisibility(loyaltyMemberField, loyaltyMemberNumberField);
-    toggleFieldVisibility(chronicConditionField, chronicConditionDetailsField);
-    toggleFieldVisibility(allergyAlertField, allergyAlertDetailsField);
-
-    // Event listeners
-    problematicPatientField.addEventListener('change', function() {
-        toggleFieldVisibility(problematicPatientField, problematicPatientReasonField);
+    
+    // Initialize conditional fields
+    const conditionalFields = [
+        { field: 'problematic_patient', target: 'problematic_patient_reason_field' },
+        { field: 'loyalty_member', target: 'loyalty_member_number_field' },
+        { field: 'chronic_condition', target: 'chronic_condition_details_field' },
+        { field: 'allergy_alert', target: 'allergy_alert_details_field' }
+    ];
+    
+    conditionalFields.forEach(config => {
+        const field = document.querySelector(`select[name="${config.field}"]`);
+        const targetField = document.getElementById(config.target);
+        
+        if (field && targetField) {
+            // Set initial state
+            toggleFieldVisibility(field, targetField);
+            
+            // Add event listener
+            field.addEventListener('change', function() {
+                toggleFieldVisibility(field, targetField);
+            });
+            
+            // Enhanced keyboard navigation
+            field.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    field.value = field.value === 'True' ? 'False' : 'True';
+                    toggleFieldVisibility(field, targetField);
+                }
+            });
+        }
     });
-
-    loyaltyMemberField.addEventListener('change', function() {
-        toggleFieldVisibility(loyaltyMemberField, loyaltyMemberNumberField);
+    
+    // Form submission with enhanced validation
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        const requiredFields = form.querySelectorAll('[required]');
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                isValid = false;
+                field.classList.add('is-invalid');
+                const feedback = field.parentElement.querySelector('.invalid-feedback') || 
+                               field.parentElement.nextElementSibling;
+                if (feedback) {
+                    feedback.style.display = 'block';
+                }
+            } else {
+                field.classList.remove('is-invalid');
+                const feedback = field.parentElement.querySelector('.invalid-feedback') || 
+                               field.parentElement.nextElementSibling;
+                if (feedback) {
+                    feedback.style.display = 'none';
+                }
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            // Announce error to screen readers
+            const errorAlert = document.createElement('div');
+            errorAlert.className = 'alert alert-danger';
+            errorAlert.setAttribute('role', 'alert');
+            errorAlert.textContent = 'Please fill in all required fields.';
+            form.insertBefore(errorAlert, form.firstChild);
+            
+            // Focus the first invalid field
+            const firstInvalid = form.querySelector('.is-invalid');
+            if (firstInvalid) {
+                firstInvalid.focus();
+            }
+            
+            // Remove the alert after 5 seconds
+            setTimeout(() => {
+                if (errorAlert && errorAlert.parentNode) {
+                    errorAlert.parentNode.removeChild(errorAlert);
+                }
+            }, 5000);
+        }
     });
-
-    chronicConditionField.addEventListener('change', function() {
-        toggleFieldVisibility(chronicConditionField, chronicConditionDetailsField);
+    
+    // Enhanced keyboard navigation for the form
+    const formGroups = form.querySelectorAll('.mb-3');
+    formGroups.forEach(group => {
+        const inputs = group.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    // Find the next focusable element
+                    const focusableElements = form.querySelectorAll('input, select, textarea, button, a');
+                    const currentIndex = Array.from(focusableElements).indexOf(this);
+                    if (currentIndex < focusableElements.length - 1) {
+                        e.preventDefault();
+                        focusableElements[currentIndex + 1].focus();
+                    }
+                }
+            });
+        });
     });
-
-    allergyAlertField.addEventListener('change', function() {
-        toggleFieldVisibility(allergyAlertField, allergyAlertDetailsField);
+    // Initialize Select2 for ethnicity dropdown with AJAX search
+    $('#ethnicity').select2({
+        placeholder: 'Select Ethnicity',
+        allowClear: true,
+        width: '100%',
+        dropdownAutoWidth: true,
+        ajax: {
+            url: '/api/ethnicities',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    search: params.term
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        },
+        minimumInputLength: 1
+    });
+    
+    // Initialize Select2 for preferred language dropdown with AJAX search
+    $('#preferred_language').select2({
+        placeholder: 'Select Preferred Language',
+        allowClear: true,
+        width: '100%',
+        dropdownAutoWidth: true,
+        ajax: {
+            url: '/api/languages',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    search: params.term
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        },
+        minimumInputLength: 1
+    });
+    
+    // Dynamic payor dropdowns
+    const payorTypeSelect = document.getElementById('payor-type');
+    const payorDetailSelect = document.getElementById('payor-detail');
+    
+    // Fetch payor types from API
+    fetch('/api/payor-types')
+        .then(response => response.json())
+        .then(data => {
+            // Clear existing options except the first one
+            while (payorTypeSelect.options.length > 1) {
+                payorTypeSelect.remove(1);
+            }
+            
+            // Add payor types from API
+            data.forEach(function(payorType) {
+                const option = document.createElement('option');
+                option.value = payorType.name;
+                option.textContent = payorType.name;
+                payorTypeSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching payor types:', error);
+        });
+    
+    payorTypeSelect.addEventListener('change', function() {
+        const selectedType = this.value;
+        // Clear existing options
+        payorDetailSelect.innerHTML = '';
+        
+        // Add default option
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Select ' + (selectedType ? selectedType + ' Detail' : 'Payor Type First');
+        payorDetailSelect.appendChild(defaultOption);
+        
+        // Fetch payor details based on selected payor type
+        if (selectedType) {
+            // Get payor type ID from the selected type name
+            fetch(`/api/payor-types`)
+                .then(response => response.json())
+                .then(payorTypes => {
+                    const payorType = payorTypes.find(pt => pt.name === selectedType);
+                    if (payorType) {
+                        return fetch(`/api/payor-details/${payorType.id}`);
+                    }
+                    return Promise.reject('Payor type not found');
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Add payor details from API
+                    data.forEach(function(detail) {
+                        const option = document.createElement('option');
+                        option.value = detail.name;
+                        option.textContent = detail.name;
+                        payorDetailSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching payor details:', error);
+                });
+        }
+    });
+    
+    // Set initial state of payor detail dropdown
+    if (payorTypeSelect.value === '') {
+        payorDetailSelect.disabled = true;
+    } else {
+        payorDetailSelect.disabled = false;
+    }
+    
+    // Enable payor detail dropdown when payor type is selected
+    payorTypeSelect.addEventListener('change', function() {
+        if (this.value) {
+            payorDetailSelect.disabled = false;
+            // Focus the payor detail field when enabled
+            payorDetailSelect.focus();
+        } else {
+            payorDetailSelect.disabled = true;
+        }
     });
 });
 </script>

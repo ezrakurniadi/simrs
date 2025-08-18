@@ -19,6 +19,12 @@ def create_app(config_name=None):
     db.init_app(app)
     # Initialize Flask-Migrate
     migrate = Migrate(app, db)
+    
+    # Import models to ensure they are registered with SQLAlchemy
+    from app.auth.models import User
+    from app.patients.models import Patient, Vitals, Allergy, Medication, PatientUser, Nationality
+    from app.auth.models import Role
+    from app.system_params.models import SystemParameter, PayorType, PayorDetail, IDType, Ethnicity, Language
 
     # Initialize Flask-Login
     login_manager = LoginManager()

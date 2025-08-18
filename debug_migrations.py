@@ -21,7 +21,10 @@ def debug_migrations():
         try:
             # Check if tables exist
             print("Checking existing tables...")
-            tables = db.engine.table_names()
+            # Use inspect to get table names (compatible with newer SQLAlchemy versions)
+            from sqlalchemy import inspect
+            inspector = inspect(db.engine)
+            tables = inspector.get_table_names()
             print(f"Existing tables: {tables}")
             
             # Check if our models would create tables

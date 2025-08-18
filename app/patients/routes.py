@@ -3,7 +3,7 @@ from flask_login import current_user
 from app.patients import bp
 from app.utils import roles_required
 from app.patients.forms import PatientForm, PatientSearchForm, VitalsForm, AllergyForm, MedicationForm, PatientRegistrationForm
-from app.patients.models import Patient, Vitals, Allergy, Medication, db, PatientUser
+from app.patients.models import Patient, Vitals, Allergy, Medication, db, PatientUser, generate_mrn
 from app.auth.models import User
 from app.clinical_notes.models import ClinicalNote
 from app.hospital.models import Admission
@@ -38,9 +38,12 @@ def view_patient(id):
 @bp.route('/patients/new', methods=['GET', 'POST'])
 @roles_required('Receptionist')
 def create_patient():
-    form = PatientRegistrationForm()
+    form = PatientRegistrationForm(db=db)
     if form.validate_on_submit():
         try:
+            # Generate MRN for the new patient
+            mrn = generate_mrn()
+            
             # Create new patient
             patient = Patient(
                 first_name=form.first_name.data,
@@ -56,6 +59,9 @@ def create_patient():
                 birthplace=form.birthplace.data,
                 marriage_status=form.marriage_status.data,
                 nationality_id=form.nationality_id.data,
+                race=form.race.data,
+                ethnicity=form.ethnicity.data,
+                mrn=mrn,  # Assign the generated MRN
                 vip_status=form.vip_status.data,
                 problematic_patient=form.problematic_patient.data,
                 problematic_patient_reason=form.problematic_patient_reason.data if form.problematic_patient.data else None,
@@ -71,8 +77,17 @@ def create_patient():
                 emergency_contact_name=form.emergency_contact_name.data,
                 emergency_contact_phone=form.emergency_contact_phone.data,
                 emergency_contact_relationship=form.emergency_contact_relationship.data,
-                insurance_provider=form.insurance_provider.data,
+                payor_type=form.payor_type.data,
+                payor_detail=form.payor_detail.data,
+                insurance_policy_id=form.insurance_policy_id.data,
+                insurance_group_number=form.insurance_group_number.data,
+                guarantor_name=form.guarantor_name.data,
+                guarantor_relationship=form.guarantor_relationship.data,
+                guarantor_phone=form.guarantor_phone.data,
+                guarantor_address=form.guarantor_address.data,
                 is_deceased=form.is_deceased.data,
+                consent_to_treat=form.consent_to_treat.data,
+                privacy_practices_acknowledged=form.privacy_practices_acknowledged.data,
                 created_by=str(current_user.id)  # Store the ID of the user creating the patient
             )
 
@@ -94,7 +109,7 @@ def create_patient():
 @roles_required('Receptionist')
 def edit_patient(id):
     patient = Patient.query.get_or_404(id)
-    form = PatientForm(obj=patient)
+    form = PatientForm(obj=patient, db=db)
 
     if form.validate_on_submit():
         try:
@@ -112,21 +127,34 @@ def edit_patient(id):
             patient.birthplace = form.birthplace.data
             patient.marriage_status = form.marriage_status.data
             patient.nationality_id = form.nationality_id.data
-            patient.vip_status = form.vip_status.data
-            patient.problematic_patient = form.problematic_patient.data
-            patient.problematic_patient_reason = form.problematic_patient_reason.data if form.problematic_patient.data else None
-            patient.loyalty_member = form.loyalty_member.data
-            patient.loyalty_member_number = form.loyalty_member_number.data if form.loyalty_member.data else None
+            patient.race = form.race.data
+            patient.ethnicity = form.ethnicity.data
+            patient.vip_status = form.vip_status.data == 'True'
+            patient.problematic_patient = form.problematic_patient.data == 'True'
+            patient.problematic_patient_reason = form.problematic_patient_reason.data if form.problematic_patient.data == 'True' else None
+            patient.loyalty_member = form.loyalty_member.data == 'True'
+            patient.loyalty_member_number = form.loyalty_member_number.data if form.loyalty_member.data == 'True' else None
             patient.ihs_number = form.ihs_number.data
-            patient.chronic_condition = form.chronic_condition.data
-            patient.chronic_condition_details = form.chronic_condition_details.data if form.chronic_condition.data else None
-            patient.allergy_alert = form.allergy_alert.data
-            patient.allergy_alert_details = form.allergy_alert_details.data if form.allergy_alert.data else None
+            patient.chronic_condition = form.chronic_condition.data == 'True'
+            patient.chronic_condition_details = form.chronic_condition_details.data if form.chronic_condition.data == 'True' else None
+            patient.allergy_alert = form.allergy_alert.data == 'True'
+            patient.allergy_alert_details = form.allergy_alert_details.data if form.allergy_alert.data == 'True' else None
             patient.preferred_communication = form.preferred_communication.data
             patient.preferred_language = form.preferred_language.data
             patient.emergency_contact_name = form.emergency_contact_name.data
             patient.emergency_contact_phone = form.emergency_contact_phone.data
             patient.emergency_contact_relationship = form.emergency_contact_relationship.data
+            patient.payor_type = form.payor_type.data
+            patient.payor_detail = form.payor_detail.data
+            patient.insurance_policy_id = form.insurance_policy_id.data
+            patient.insurance_group_number = form.insurance_group_number.data
+            patient.guarantor_name = form.guarantor_name.data
+            patient.guarantor_relationship = form.guarantor_relationship.data
+            patient.guarantor_phone = form.guarantor_phone.data
+            patient.guarantor_address = form.guarantor_address.data
+            patient.consent_to_treat = form.consent_to_treat.data == 'True'
+            patient.privacy_practices_acknowledged = form.privacy_practices_acknowledged.data == 'True'
+            # Note: MRN is not updated here as it's auto-generated and should not be modified
 
             db.session.commit()
 

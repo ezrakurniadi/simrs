@@ -20,7 +20,15 @@ def test_form_field_definitions():
         'problematic_patient_reason',
         'loyalty_member_number',
         'chronic_condition_details',
-        'allergy_alert_details'
+        'allergy_alert_details',
+        'insurance_policy_id',
+        'insurance_group_number',
+        'guarantor_name',
+        'guarantor_relationship',
+        'guarantor_phone',
+        'guarantor_address',
+        'consent_to_treat',
+        'privacy_practices_acknowledged'
     ]
     
     for field in required_fields:
@@ -49,10 +57,14 @@ def test_model_fields():
         patient_columns = [column.name for column in Patient.__table__.columns]
         
         required_fields = [
-            'problematic_patient_reason',
-            'loyalty_member_number',
-            'chronic_condition_details',
-            'allergy_alert_details'
+            'insurance_policy_id',
+            'insurance_group_number',
+            'guarantor_name',
+            'guarantor_relationship',
+            'guarantor_phone',
+            'guarantor_address',
+            'consent_to_treat',
+            'privacy_practices_acknowledged'
         ]
         
         for field in required_fields:

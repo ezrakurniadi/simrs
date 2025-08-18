@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}Masonry Dashboard Demo{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard-masonry.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <h1>Masonry Dashboard Layout</h1>
+      <p class="text-muted">Demonstrating two approaches to create a responsive masonry-style grid layout.</p>
+      
+      <div class="mt-4">
+        <h2>Option 1: CSS Grid Masonry Layout</h2>
+        <p>Uses CSS Grid with auto-placement and gap control for precise layout.</p>
+        
+        <div class="masonry-container">
+          <div class="masonry-grid">
+            <!-- Card 1 -->
+            <div class="masonry-card">
+              <div class="card-header">
+                <span class="card-icon">📊</span>
+                <h3 class="card-title">Analytics Overview</h3>
+              </div>
+              <div class="card-content">
+                <p>This card has a moderate amount of content to demonstrate variable heights.</p>
+                <p>The masonry layout will stack these cards efficiently, minimizing vertical gaps.</p>
+              </div>
+            </div>
+            
+            <!-- Card 2 -->
+            <div class="masonry-card">
+              <div class="card-header">
+                <span class="card-icon">👥</span>
+                <h3 class="card-title">User Statistics</h3>
+              </div>
+              <div class="card-content">
+                <p>This card has more content than the others to demonstrate how the masonry layout handles varying heights.</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget ultricies.</p>
+                <p>With proper implementation, the cards will stack like bricks in a wall, creating an efficient use of space.</p>
+              </div>
+            </div>
+            
+            <!-- Card 3 -->
+            <div class="masonry-card">
+              <div class="card-header">
+                <span class="card-icon">💰</span>
+                <h3 class="card-title">Revenue Report</h3>
+              </div>
+              <div class="card-content">
+                <p>Short content card to show variation in height.</p>
+              </div>
+            </div>
+            
+            <!-- Card 4 -->
+            <div class="masonry-card">
+              <div class="card-header">
+                <span class="card-icon">⚙️</span>
+                <h3 class="card-title">System Status</h3>
+              </div>
+              <div class="card-content">
+                <p>This card has a moderate amount of content. The masonry layout should position it to fill gaps efficiently.</p>
+                <p>By using either CSS Grid or CSS Columns, we can achieve a Pinterest-like layout that's responsive across devices.</p>
+              </div>
+            </div>
+            
+            <!-- Card 5 -->
+            <div class="masonry-card">
+              <div class="card-header">
+                <span class="card-icon">🔔</span>
+                <h3 class="card-title">Notifications</h3>
+              </div>
+              <div class="card-content">
+                <p>Short content card.</p>
+              </div>
+            </div>
+            
+            <!-- Card 6 -->
+            <div class="masonry-card">
+              <div class="card-header">
+                <span class="card-icon">📈</span>
+                <h3 class="card-title">Performance Metrics</h3>
+              </div>
+              <div class="card-content">
+                <p>This is the tallest card with the most content to really test the masonry layout's ability to fill gaps.</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget ultricies.</p>
+                <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-5">
+        <h2>Option 2: CSS Columns Masonry Layout</h2>
+        <p>Uses CSS multi-columns for a simpler implementation that naturally creates a masonry effect.</p>
+        
+        <div class="masonry-container">
+          <div class="masonry-columns">
+            <!-- Card 1 -->
+            <div class="masonry-card">
+              <div class="card-header">
+                <span class="card-icon">📊</span>
+                <h3 class="card-title">Analytics Overview</h3>
+              </div>
+              <div class="card-content">
+                <p>This card has a moderate amount of content to demonstrate variable heights.</p>
+                <p>The masonry layout will stack these cards efficiently, minimizing vertical gaps.</p>
+              </div>
+            </div>
+            
+            <!-- Card 2 -->
+            <div class="masonry-card">
+              <div class="card-header">
+                <span class="card-icon">👥</span>
+                <h3 class="card-title">User Statistics</h3>
+              </div>
+              <div class="card-content">
+                <p>This card has more content than the others to demonstrate how the masonry layout handles varying heights.</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget ultricies.</p>
+                <p>With proper implementation, the cards will stack like bricks in a wall, creating an efficient use of space.</p>
+              </div>
+            </div>
+            
+            <!-- Card 3 -->
+            <div class="masonry-card">
+              <div class="card-header">
+                <span class="card-icon">💰</span>
+                <h3 class="card-title">Revenue Report</h3>
+              </div>
+              <div class="card-content">
+                <p>Short content card to show variation in height.</p>
+              </div>
+            </div>
+            
+            <!-- Card 4 -->
+            <div class="masonry-card">
+              <div class="card-header">
+                <span class="card-icon">⚙️</span>
+                <h3 class="card-title">System Status</h3>
+              </div>
+              <div class="card-content">
+                <p>This card has a moderate amount of content. The masonry layout should position it to fill gaps efficiently.</p>
+                <p>By using either CSS Grid or CSS Columns, we can achieve a Pinterest-like layout that's responsive across devices.</p>
+              </div>
+            </div>
+            
+            <!-- Card 5 -->
+            <div class="masonry-card">
+              <div class="card-header">
+                <span class="card-icon">🔔</span>
+                <h3 class="card-title">Notifications</h3>
+              </div>
+              <div class="card-content">
+                <p>Short content card.</p>
+              </div>
+            </div>
+            
+            <!-- Card 6 -->
+            <div class="masonry-card">
+              <div class="card-header">
+                <span class="card-icon">📈</span>
+                <h3 class="card-title">Performance Metrics</h3>
+              </div>
+              <div class="card-content">
+                <p>This is the tallest card with the most content to really test the masonry layout's ability to fill gaps.</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget ultricies.</p>
+                <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

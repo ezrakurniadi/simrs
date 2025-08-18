@@ -1,0 +1,161 @@
+/* Masonry-style Dashboard Grid Layout */
+
+/* Base styles for the masonry container */
+.masonry-container {
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Option 1: CSS Grid Masonry Layout */
+.masonry-grid {
+  display: grid;
+  gap: 1rem;
+  /* Default to single column on small screens */
+  grid-template-columns: 1fr;
+  /* Enable automatic row creation with minimum height */
+  grid-auto-rows: minmax(100px, auto);
+}
+
+/* Option 2: CSS Columns Masonry Layout */
+.masonry-columns {
+  column-count: 1;
+  column-gap: 1rem;
+  /* Prevent cards from breaking across columns */
+  break-inside: avoid;
+}
+
+/* Card styles for both layout options */
+.masonry-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem; /* For CSS Grid */
+  margin-bottom: 1rem; /* For CSS Columns */
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.masonry-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Card header with icon and title */
+.card-header {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+}
+
+.card-icon {
+  margin-right: 0.5rem;
+  color: #007bff;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Card content section */
+.card-content {
+  padding: 1rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* Responsive adjustments for CSS Grid */
+@media (min-width: 768px) {
+  /* Tablet: 2 columns */
+  .masonry-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  /* Desktop: 3 columns */
+  .masonry-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1400px) {
+  /* Large desktop: 4 columns */
+  .masonry-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Responsive adjustments for CSS Columns */
+@media (min-width: 768px) {
+  /* Tablet: 2 columns */
+  .masonry-columns {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  /* Desktop: 3 columns */
+  .masonry-columns {
+    column-count: 3;
+  }
+}
+
+@media (min-width: 1400px) {
+  /* Large desktop: 4 columns */
+  .masonry-columns {
+    column-count: 4;
+  }
+}
+
+/* Ensure images and other content don't overflow */
+.masonry-card img,
+.masonry-card video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Optional: Add a subtle animation when cards are loaded */
+.masonry-card {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.masonry-card:nth-child(1) { animation-delay: 0.1s; }
+.masonry-card:nth-child(2) { animation-delay: 0.2s; }
+.masonry-card:nth-child(3) { animation-delay: 0.3s; }
+.masonry-card:nth-child(4) { animation-delay: 0.4s; }
+.masonry-card:nth-child(5) { animation-delay: 0.5s; }
+.masonry-card:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Additional utility classes */
+.masonry-card.full-width {
+  grid-column: span 2;
+}
+
+.masonry-card.highlight {
+  border-left: 4px solid #007bff;
+}
+
+/* Ensure proper spacing in all scenarios */
+.masonry-container {
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .masonry-container {
+    padding: 2rem;
+  }
+}
