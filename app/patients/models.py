@@ -27,8 +27,10 @@ class Patient(db.Model):
     loyalty_member_number = db.Column(db.String(50), nullable=True)
     ihs_number = db.Column(db.String(50), nullable=True)
     mrn = db.Column(db.String(11), nullable=True, unique=True)  # Format: 00-00-00-00
-    race = db.Column(db.String(50), nullable=True)
+    race_id = db.Column(db.Integer, db.ForeignKey('races.id'), nullable=True)
     ethnicity = db.Column(db.String(50), nullable=True)
+    # Relationship
+    race = db.relationship('Race', backref=db.backref('patients', lazy=True))
     chronic_condition = db.Column(db.Boolean, default=False)
     chronic_condition_details = db.Column(db.Text, nullable=True)
     allergy_alert = db.Column(db.Boolean, default=False)

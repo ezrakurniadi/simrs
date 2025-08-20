@@ -89,6 +89,17 @@ class Language(db.Model):
     def __repr__(self):
         return f'<Language {self.name}>'
 
+class Race(db.Model):
+    __tablename__ = 'races'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    description = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime)
+    updated_at = db.Column(db.DateTime)
+
+    def __repr__(self):
+        return f'<Race {self.name}>'
 # Helper functions for use in routes
 def get_all_nationalities():
     """Get all nationalities from the database"""

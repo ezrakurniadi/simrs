@@ -16,6 +16,9 @@ class Config:
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ADMINS = ['admin@example.com']
+    API_BASE_URL = os.environ.get('API_BASE_URL')
+
+
 
 
 class DevelopmentConfig(Config):

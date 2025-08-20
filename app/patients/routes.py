@@ -42,6 +42,7 @@ def create_patient():
     if form.validate_on_submit():
         try:
             # Generate MRN for the new patient
+            print ("Generating MRN...")
             mrn = generate_mrn()
             
             # Create new patient

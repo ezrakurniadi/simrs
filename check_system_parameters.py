@@ -1,13 +1,17 @@
 from app import create_app, db
-from sqlalchemy import inspect
+from app.system_params.models import Ethnicity, Language
 
 app = create_app()
+
 with app.app_context():
-    inspector = inspect(db.engine)
+    # Check ethnicities
+    ethnicities = Ethnicity.query.all()
+    print(f"Ethnicities count: {len(ethnicities)}")
+    for ethnicity in ethnicities:
+        print(f"  - {ethnicity.name}")
     
-    # Check columns in system_parameters table
-    if 'system_parameters' in inspector.get_table_names():
-        columns = inspector.get_columns('system_parameters')
-        print("\nColumns in system_parameters table:")
-        for col in columns:
-            print(f"  - {col['name']}: {col['type']} (nullable: {col['nullable']})")
+    # Check languages
+    languages = Language.query.all()
+    print(f"Languages count: {len(languages)}")
+    for language in languages:
+        print(f"  - {language.name} ({language.iso_code})")

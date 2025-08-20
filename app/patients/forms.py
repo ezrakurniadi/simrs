@@ -4,12 +4,24 @@ from wtforms.validators import DataRequired, Email, Optional, NumberRange
 import requests
 import json
 from flask import current_app
-from app.system_params.models import SystemParameter, PayorType, PayorDetail, IDType
+from app.system_params.models import SystemParameter, PayorType, PayorDetail, IDType, Race, Ethnicity
 
-def get_id_types(db):
-    # Get ID types from the id_types table
-    id_types = db.session.query(IDType).filter_by(is_active=True).all()
-    return [('', 'Select ID Type')] + [(it.name, it.name) for it in id_types]
+
+
+# def get_id_types(db):
+#     # Get ID types from the id_types table
+#     id_types = db.session.query(IDType).filter_by(is_active=True).all()
+#     return [('', 'Select ID Type')] + [(it.name, it.name) for it in id_types]
+
+# def get_races(db):
+#     # Get races from the races table
+#     races = db.session.query(Race).all()
+#     return [('', 'Select Race')] + [(r.name, r.name) for r in races]
+
+# def get_ethnicities(db):
+#     # Get ethnicities from the ethnicities table
+#     ethnicities = db.session.query(Ethnicity).all()    
+#     return [('', 'Select Ethnicity')] + [(e.name, e.name) for e in ethnicities]
 
 class PatientForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired()])
@@ -60,17 +72,7 @@ class PatientForm(FlaskForm):
     guarantor_relationship = StringField('Guarantor Relationship to Patient')
     guarantor_phone = StringField('Guarantor Phone')
     guarantor_address = TextAreaField('Guarantor Address')
-    race = SelectField('Race', choices=[
-       ('', 'Select Race'),
-       ('American Indian or Alaska Native', 'American Indian or Alaska Native'),
-       ('Asian', 'Asian'),
-       ('Black or African American', 'Black or African American'),
-       ('Hispanic or Latino', 'Hispanic or Latino'),
-       ('Native Hawaiian or Other Pacific Islander', 'Native Hawaiian or Other Pacific Islander'),
-       ('White', 'White'),
-       ('Other', 'Other'),
-       ('Prefer not to say', 'Prefer not to say')
-   ], validators=[Optional()], default='')
+    race = SelectField('Race', choices=[], validators=[Optional()], default='')
     ethnicity = SelectField('Ethnicity', choices=[], validators=[Optional()], default='')
     mrn = StringField('Medical Record Number (MRN)', render_kw={'readonly': True})
     is_deceased = SelectField('Status', choices=[(True, 'Deceased'), (False, 'Alive')], default=False)
@@ -81,20 +83,23 @@ class PatientForm(FlaskForm):
     def __init__(self, *args, db=None, **kwargs):
         super(PatientForm, self).__init__(*args, **kwargs)
         # Fetch nationalities from the API
-        try:
-            response = requests.get(f"{current_app.config['API_BASE_URL']}/api/nationalities")
-            if response.status_code == 200:
-                nationalities = response.json()
-                self.nationality_id.choices = [(str(n['id']), n['name']) for n in nationalities]
-            else:
-                self.nationality_id.choices = []
-        except Exception as e:
-            self.nationality_id.choices = []
-            print(f"Error fetching nationalities: {e}")
+        # try:
+        #     response = requests.get(f"{current_app.config['API_BASE_URL']}/api/nationalities")
+        #     if response.status_code == 200:
+        #         nationalities = response.json()
+        #         self.nationality_id.choices = [(str(n['id']), n['name']) for n in nationalities]
+        #     else:
+        #         self.nationality_id.choices = []
+        # except Exception as e:
+        #     self.nationality_id.choices = []
+        #     print(f"Error fetching nationalities: {e}")
 
         # Set ID types
-        if db:
-            self.id_type.choices = get_id_types(db)
+        # if db:
+            # self.id_type.choices = get_id_types(db)
+            # self.race.choices = get_races(db)
+            # self.ethnicity.choices = get_ethnicities(db)
+
         
         # Set payor type choices
         if db:
@@ -196,137 +201,14 @@ class PatientRegistrationForm(PatientForm):
     mrn = StringField('Medical Record Number (MRN)', render_kw={'readonly': True})
 
     # Demographics
-    race = SelectField('Race', choices=[
-       ('', 'Select Race'),
-       ('American Indian or Alaska Native', 'American Indian or Alaska Native'),
-       ('Asian', 'Asian'),
-       ('Black or African American', 'Black or African American'),
-       ('Hispanic or Latino', 'Hispanic or Latino'),
-       ('Native Hawaiian or Other Pacific Islander', 'Native Hawaiian or Other Pacific Islander'),
-       ('White', 'White'),
-       ('Other', 'Other'),
-       ('Prefer not to say', 'Prefer not to say')
-   ], validators=[Optional()], default='')
-    ethnicity = SelectField('Ethnicity', choices=[
-       ('', 'Select Ethnicity'),
-       # Major ethnic categories
-       ('African', 'African'),
-       ('African American', 'African American'),
-       ('Afro-Caribbean', 'Afro-Caribbean'),
-       ('Arab', 'Arab'),
-       ('Asian', 'Asian'),
-       ('Black', 'Black'),
-       ('Caucasian', 'Caucasian'),
-       ('European', 'European'),
-       ('Hispanic or Latino', 'Hispanic or Latino'),
-       ('Indigenous', 'Indigenous'),
-       ('Middle Eastern', 'Middle Eastern'),
-       ('Native American', 'Native American'),
-       ('Pacific Islander', 'Pacific Islander'),
-       ('South Asian', 'South Asian'),
-       ('White', 'White'),
-       ('Other', 'Other'),
-       
-       # Specific ethnic groups
-       ('Aboriginal', 'Aboriginal'),
-       ('Ainu', 'Ainu'),
-       ('Alaska Native', 'Alaska Native'),
-       ('Amish', 'Amish'),
-       ('Amazigh (Berber)', 'Amazigh (Berber)'),
-       ('Apache', 'Apache'),
-       ('Armenian', 'Armenian'),
-       ('Assyrian', 'Assyrian'),
-       ('Basque', 'Basque'),
-       ('Berber', 'Berber'),
-       ('Boer', 'Boer'),
-       ('Cajun', 'Cajun'),
-       ('Chechen', 'Chechen'),
-       ('Cherokee', 'Cherokee'),
-       ('Chinese', 'Chinese'),
-       ('Circassian', 'Circassian'),
-       ('Coptic', 'Coptic'),
-       ('Cornish', 'Cornish'),
-       ('Cree', 'Cree'),
-       ('Dinka', 'Dinka'),
-       ('Dravidian', 'Dravidian'),
-       ('Dutch', 'Dutch'),
-       ('Eskimo', 'Eskimo'),
-       ('Finnish', 'Finnish'),
-       ('Flemish', 'Flemish'),
-       ('Fula', 'Fula'),
-       ('Gaelic', 'Gaelic'),
-       ('German', 'German'),
-       ('Greek', 'Greek'),
-       ('Han Chinese', 'Han Chinese'),
-       ('Hawaiian', 'Hawaiian'),
-       ('Hmong', 'Hmong'),
-       ('Inuit', 'Inuit'),
-       ('Irish', 'Irish'),
-       ('Italian', 'Italian'),
-       ('Jewish', 'Jewish'),
-       ('Kalenjin', 'Kalenjin'),
-       ('Khoisan', 'Khoisan'),
-       ('Kurdish', 'Kurdish'),
-       ('Ladino', 'Ladino'),
-       ('Latino', 'Latino'),
-       ('Malay', 'Malay'),
-       ('Maori', 'Maori'),
-       ('Mestizo', 'Mestizo'),
-       ('Métis', 'Métis'),
-       ('Mongol', 'Mongol'),
-       ('Navajo', 'Navajo'),
-       ('Ndebele', 'Ndebele'),
-       ('Oromo', 'Oromo'),
-       ('Persian', 'Persian'),
-       ('Punjabi', 'Punjabi'),
-       ('Romani', 'Romani'),
-       ('Sami', 'Sami'),
-       ('Sinhalese', 'Sinhalese'),
-       ('Slavic', 'Slavic'),
-       ('Tamil', 'Tamil'),
-       ('Tatar', 'Tatar'),
-       ('Tibetan', 'Tibetan'),
-       ('Tlingit', 'Tlingit'),
-       ('Ukrainian', 'Ukrainian'),
-       ('Uyghur', 'Uyghur'),
-       ('Vietnamese', 'Vietnamese'),
-       ('Yoruba', 'Yoruba'),
-       ('Zulu', 'Zulu'),
-       
-       # Indigenous communities
-       ('Abenaki', 'Abenaki'),
-       ('Algonquin', 'Algonquin'),
-       ('Anishinaabe', 'Anishinaabe'),
-       ('Apache', 'Apache'),
-       ('Assiniboine', 'Assiniboine'),
-       ('Atikamekw', 'Atikamekw'),
-       ('Blackfoot', 'Blackfoot'),
-       ('Chippewa', 'Chippewa'),
-       ('Cree', 'Cree'),
-       ('Dakota', 'Dakota'),
-       ('Dene', 'Dene'),
-       ('Haida', 'Haida'),
-       ('Haudenosaunee', 'Haudenosaunee'),
-       ('Innu', 'Innu'),
-       ('Inuit', 'Inuit'),
-       ('Kwakwaka\'wakw', 'Kwakwaka\'wakw'),
-       ('Lakota', 'Lakota'),
-       ('Lummi', 'Lummi'),
-       ('Mi\'kmaq', 'Mi\'kmaq'),
-       ('Mohawk', 'Mohawk'),
-       ('Navajo', 'Navajo'),
-       ('Nisga\'a', 'Nisga\'a'),
-       ('Ojibwe', 'Ojibwe'),
-       ('Seminole', 'Seminole'),
-       ('Tlingit', 'Tlingit'),
-       ('Tsam', 'Tsam'),
-       ('Tsimshian', 'Tsimshian'),
-       ('Zapotec', 'Zapotec'),
-       
-       # Additional options
-       ('Mixed Ethnicity', 'Mixed Ethnicity'),
-       ('Prefer not to say', 'Prefer not to say')
-   ], validators=[Optional()], default='')
+    race = SelectField('Race',
+        validators=[Optional()],
+        coerce=str, 
+        default='')
+    ethnicity = SelectField('Ethnicity', 
+        validators=[Optional()], 
+        coerce=str,
+        default='')
 
     # Status
     is_deceased = SelectField('Status', choices=[('True', 'Deceased'), ('False', 'Alive')], coerce=str, default='False')
@@ -361,6 +243,13 @@ class PatientRegistrationForm(PatientForm):
             self.payor_detail.choices = [('', f'Select {payor_type} Detail')] + [(pd.name, pd.name) for pd in payor_details]
         else:
             self.payor_detail.choices = [('', 'Select Payor Type First')]
+            
+        # Set race choices from database
+        if hasattr(self, 'db') and self.db:
+            races = self.db.session.query(Race).all()
+            self.race.choices = [('', 'Select Race')] + [(r.name, r.name) for r in races]
+        else:
+            self.race.choices = [('', 'Select Race')]
 
 class MedicationForm(FlaskForm):
     drug_name = StringField('Drug Name', validators=[DataRequired()])
