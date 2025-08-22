@@ -1,12 +1,22 @@
 console.log('Dropdown manager script loaded');
-document.addEventListener('DOMContentLoaded', function() {
+
+// Main initialization function
+function initializeDropdowns() {
     console.log('Dropdown manager initialized');
     console.log('jQuery loaded:', typeof $ !== 'undefined');
-    console.log('Select2 loaded:', typeof $.fn.select2 !== 'undefined');
+    
+    // Check if jQuery is properly loaded
+    if (typeof $ === 'undefined') {
+        console.error('jQuery is not loaded');
+        return;
+    }
+    
+    console.log('jQuery is loaded, proceeding with initialization');
+    
     // Accessibility enhancements
     const form = document.querySelector('form');
     form.setAttribute('novalidate', '');
-
+    
     // Add ARIA attributes to form controls
     const formControls = form.querySelectorAll('input, select, textarea');
     formControls.forEach(control => {
@@ -105,87 +115,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
-    // Initialize Select2 for ethnicity dropdown with AJAX search
-    console.log('Initializing Select2 for ethnicity dropdown');
-    const ethnicityElement = $('#ethnicity');
-    console.log('Ethnicity element found:', ethnicityElement.length > 0);
-    if (ethnicityElement.length === 0) {
-        console.error('Ethnicity dropdown element not found');
-    }
-    ethnicityElement.select2({
-        placeholder: 'Select Ethnicity',
-        allowClear: true,
-        width: '100%',
-        dropdownAutoWidth: true,
-        ajax: {
-            url: '/api/ethnicities',
-            dataType: 'json',
-            delay: 250,
-            data: function (params) {
-                console.log('Ethnicity search term:', params.term);
-                return {
-                    search: params.term
-                };
-            },
-            processResults: function (data) {
-                console.log('Ethnicity results received:', data);
-                return data;
-            },
-            cache: true
-        },
-        minimumInputLength: 0
-    });
-
-    // Initialize Select2 for preferred language dropdown with AJAX search
-    console.log('Initializing Select2 for preferred language dropdown');
-    const languageElement = $('#preferred_language');
-    console.log('Language element found:', languageElement.length > 0);
-    if (languageElement.length === 0) {
-        console.error('Language dropdown element not found');
-    }
-    languageElement.select2({
-        placeholder: 'Select Preferred Language',
-        allowClear: true,
-        width: '100%',
-        dropdownAutoWidth: true,
-        ajax: {
-            url: '/api/languages',
-            dataType: 'json',
-            delay: 250,
-            data: function (params) {
-                console.log('Language search term:', params.term);
-                return {
-                    search: params.term
-                };
-            },
-            processResults: function (data) {
-                console.log('Language results received:', data);
-                return data;
-            },
-            cache: true
-        },
-        minimumInputLength: 0
-    });
-    
-    // Test API endpoints directly
-    console.log('Testing API endpoints...');
-    fetch('/api/ethnicities')
-        .then(response => response.json())
-        .then(data => {
-            console.log('Direct API call to /api/ethnicities:', data);
-        })
-        .catch(error => {
-            console.error('Error fetching ethnicities:', error);
-        });
-    
-    fetch('/api/languages')
-        .then(response => response.json())
-        .then(data => {
-            console.log('Direct API call to /api/languages:', data);
-        })
-        .catch(error => {
-            console.error('Error fetching languages:', error);
-        });
 
     // Dynamic payor dropdowns
     const payorTypeSelect = document.getElementById('payor-type');
@@ -212,8 +141,17 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error fetching payor types:', error);
         });
 
+    // Handle payor type selection
     payorTypeSelect.addEventListener('change', function() {
         const selectedType = this.value;
+        
+        // Set initial state of payor detail dropdown
+        if (selectedType === '') {
+            payorDetailSelect.disabled = true;
+        } else {
+            payorDetailSelect.disabled = false;
+        }
+        
         // Clear existing options
         payorDetailSelect.innerHTML = '';
 
@@ -244,28 +182,23 @@ document.addEventListener('DOMContentLoaded', function() {
                         option.textContent = detail.name;
                         payorDetailSelect.appendChild(option);
                     });
+                    
+                    // Focus the payor detail field when enabled and data is loaded
+                    payorDetailSelect.focus();
                 })
                 .catch(error => {
                     console.error('Error fetching payor details:', error);
                 });
         }
     });
+}
 
-    // Set initial state of payor detail dropdown
-    if (payorTypeSelect.value === '') {
-        payorDetailSelect.disabled = true;
-    } else {
-        payorDetailSelect.disabled = false;
-    }
-
-    // Enable payor detail dropdown when payor type is selected
-    payorTypeSelect.addEventListener('change', function() {
-        if (this.value) {
-            payorDetailSelect.disabled = false;
-            // Focus the payor detail field when enabled
-            payorDetailSelect.focus();
-        } else {
-            payorDetailSelect.disabled = true;
-        }
-    });
-});
+// Ensure initialization happens after DOM is ready and libraries are loaded
+if (document.readyState === 'loading') {
+    console.log('DOM is still loading, will initialize on DOMContentLoaded');
+    document.addEventListener('DOMContentLoaded', initializeDropdowns);
+} else {
+    // DOM is already ready
+    console.log('DOM is already ready, initializing immediately');
+    initializeDropdowns();
+}

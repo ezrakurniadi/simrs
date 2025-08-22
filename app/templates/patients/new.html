@@ -5,12 +5,10 @@
 {% block head %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/patient-registration.css') }}">
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 {% endblock %}
 
 {% block scripts %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ url_for('static', filename='js/dropdown-manager.js') }}"></script>
 {% endblock %}
 
@@ -205,7 +203,16 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.ethnicity(class="form-select", id="ethnicity") }}
+                        <select name="ethnicity" id="ethnicity" class="form-select">
+                            <option value="">Select Ethnicity</option>
+                            <option value="Asian">Asian</option>
+                            <option value="Black or African American">Black or African American</option>
+                            <option value="Hispanic or Latino">Hispanic or Latino</option>
+                            <option value="White">White</option>
+                            <option value="Native American or Alaska Native">Native American or Alaska Native</option>
+                            <option value="Native Hawaiian or Other Pacific Islander">Native Hawaiian or Other Pacific Islander</option>
+                            <option value="Other">Other</option>
+                        </select>
                     {% endif %}
                 </div>
             </div>
@@ -289,7 +296,18 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.preferred_language(class="form-select", id="preferred_language") }}
+                        <select name="preferred_language" id="preferred_language" class="form-select">
+                            <option value="">Select Preferred Language</option>
+                            <option value="English">English</option>
+                            <option value="Spanish">Spanish</option>
+                            <option value="French">French</option>
+                            <option value="German">German</option>
+                            <option value="Chinese">Chinese</option>
+                            <option value="Japanese">Japanese</option>
+                            <option value="Korean">Korean</option>
+                            <option value="Vietnamese">Vietnamese</option>
+                            <option value="Other">Other</option>
+                        </select>
                     {% endif %}
                 </div>
             </div>
