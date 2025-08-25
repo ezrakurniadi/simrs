@@ -1,24 +1,28 @@
+import os
+import sys
 from app import create_app, db
-from sqlalchemy import inspect
+from sqlalchemy import text
 
-app = create_app()
-with app.app_context():
-    inspector = inspect(db.engine)
-    tables = inspector.get_table_names()
-    print("Tables in database:")
-    for table in tables:
-        print(f"  - {table}")
+# Add the current directory to Python path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+def check_tables():
+    app = create_app()
+    with app.app_context():
+        # Get all table names using inspector
+        from sqlalchemy import inspect
+        inspector = inspect(db.engine)
+        tables = inspector.get_table_names()
         
-    # Check columns in patient table
-    if 'patient' in tables:
-        columns = inspector.get_columns('patient')
-        print("\nColumns in patient table:")
-        for col in columns:
-            print(f"  - {col['name']}: {col['type']} (nullable: {col['nullable']})")
-            
-    # Check columns in nationalities table
-    if 'nationalities' in tables:
-        columns = inspector.get_columns('nationalities')
-        print("\nColumns in nationalities table:")
-        for col in columns:
-            print(f"  - {col['name']}: {col['type']} (nullable: {col['nullable']})")
+        print("Database tables:")
+        for table in tables:
+            print(f"  - {table}")
+        
+        # Check if 'user' table exists
+        if 'user' in tables:
+            print("\n'user' table exists")
+        else:
+            print("\n'user' table does NOT exist")
+
+if __name__ == "__main__":
+    check_tables()

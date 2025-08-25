@@ -196,23 +196,14 @@
                 <div class="mb-3">
                     {{ form.ethnicity.label(class="form-label") }}
                     {% if form.ethnicity.errors %}
-                        {{ form.ethnicity(class="form-select", class_="form-select is-invalid", id="ethnicity") }}
+                        {{ form.ethnicity(class="form-select", class_="form-select is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.ethnicity.errors %}
                                 <p>{{ error }}</p>
                             {% endfor %}
                         </div>
                     {% else %}
-                        <select name="ethnicity" id="ethnicity" class="form-select">
-                            <option value="">Select Ethnicity</option>
-                            <option value="Asian">Asian</option>
-                            <option value="Black or African American">Black or African American</option>
-                            <option value="Hispanic or Latino">Hispanic or Latino</option>
-                            <option value="White">White</option>
-                            <option value="Native American or Alaska Native">Native American or Alaska Native</option>
-                            <option value="Native Hawaiian or Other Pacific Islander">Native Hawaiian or Other Pacific Islander</option>
-                            <option value="Other">Other</option>
-                        </select>
+                        {{ form.ethnicity(class="form-select") }}
                     {% endif %}
                 </div>
             </div>
@@ -289,25 +280,14 @@
                 <div class="mb-3">
                     {{ form.preferred_language.label(class="form-label") }}
                     {% if form.preferred_language.errors %}
-                        {{ form.preferred_language(class="form-select", class_="form-select is-invalid", id="preferred_language") }}
+                        {{ form.preferred_language(class="form-select", class_="form-select is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.preferred_language.errors %}
                                 <p>{{ error }}</p>
                             {% endfor %}
                         </div>
                     {% else %}
-                        <select name="preferred_language" id="preferred_language" class="form-select">
-                            <option value="">Select Preferred Language</option>
-                            <option value="English">English</option>
-                            <option value="Spanish">Spanish</option>
-                            <option value="French">French</option>
-                            <option value="German">German</option>
-                            <option value="Chinese">Chinese</option>
-                            <option value="Japanese">Japanese</option>
-                            <option value="Korean">Korean</option>
-                            <option value="Vietnamese">Vietnamese</option>
-                            <option value="Other">Other</option>
-                        </select>
+                        {{ form.preferred_language(class="form-select") }}
                     {% endif %}
                 </div>
             </div>

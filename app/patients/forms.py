@@ -6,6 +6,31 @@ import json
 from flask import current_app
 from app.system_params.models import SystemParameter, PayorType, PayorDetail, IDType, Race, Ethnicity
 
+# Choice constants for better organization and reusability
+ETHNICITY_CHOICES = [
+    ('', 'Select Ethnicity'),
+    ('Asian', 'Asian'),
+    ('Black or African American', 'Black or African American'),
+    ('Hispanic or Latino', 'Hispanic or Latino'),
+    ('White', 'White'),
+    ('Native American or Alaska Native', 'Native American or Alaska Native'),
+    ('Native Hawaiian or Other Pacific Islander', 'Native Hawaiian or Other Pacific Islander'),
+    ('Other', 'Other')
+]
+
+PREFERRED_LANGUAGE_CHOICES = [
+    ('', 'Select Preferred Language'),
+    ('English', 'English'),
+    ('Spanish', 'Spanish'),
+    ('French', 'French'),
+    ('German', 'German'),
+    ('Chinese', 'Chinese'),
+    ('Japanese', 'Japanese'),
+    ('Korean', 'Korean'),
+    ('Vietnamese', 'Vietnamese'),
+    ('Other', 'Other')
+]
+
 
 
 # def get_id_types(db):
@@ -60,7 +85,7 @@ class PatientForm(FlaskForm):
     allergy_alert = SelectField('Allergy Alert', choices=[(True, 'Yes'), (False, 'No')], default=False)
     allergy_alert_details = TextAreaField('Allergy Alert Details', validators=[Optional()])
     preferred_communication = StringField('Preferred Communication Method')
-    preferred_language = SelectField('Preferred Language', choices=[], validators=[Optional()], default='')
+    preferred_language = SelectField('Preferred Language', choices=PREFERRED_LANGUAGE_CHOICES, validators=[Optional()], default='')
     emergency_contact_name = StringField('Emergency Contact Name')
     emergency_contact_phone = StringField('Emergency Contact Phone')
     emergency_contact_relationship = StringField('Emergency Contact Relationship')
@@ -73,7 +98,7 @@ class PatientForm(FlaskForm):
     guarantor_phone = StringField('Guarantor Phone')
     guarantor_address = TextAreaField('Guarantor Address')
     race = SelectField('Race', choices=[], validators=[Optional()], default='')
-    ethnicity = SelectField('Ethnicity', choices=[], validators=[Optional()], default='')
+    ethnicity = SelectField('Ethnicity', choices=ETHNICITY_CHOICES, validators=[Optional()], default='')
     mrn = StringField('Medical Record Number (MRN)', render_kw={'readonly': True})
     is_deceased = SelectField('Status', choices=[(True, 'Deceased'), (False, 'Alive')], default=False)
     consent_to_treat = SelectField('Consent to Treat', choices=[(True, 'Yes'), (False, 'No')], default=False)
@@ -203,10 +228,11 @@ class PatientRegistrationForm(PatientForm):
     # Demographics
     race = SelectField('Race',
         validators=[Optional()],
-        coerce=str, 
+        coerce=str,
         default='')
-    ethnicity = SelectField('Ethnicity', 
-        validators=[Optional()], 
+    ethnicity = SelectField('Ethnicity',
+        choices=ETHNICITY_CHOICES,
+        validators=[Optional()],
         coerce=str,
         default='')
 

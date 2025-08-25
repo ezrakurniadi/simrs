@@ -5,6 +5,10 @@ from app.patients.auth_forms import PatientLoginForm, PatientRegistrationForm
 from app.patients.models import PatientUser, Patient, db
 from urllib.parse import urlparse
 
+@bp.route('/')
+def home():
+    return render_template('patients/auth/home.html')
+
 @bp.route('/patient/login', methods=['GET', 'POST'])
 def patient_login():
     if current_user.is_authenticated and isinstance(current_user, PatientUser):

@@ -32,7 +32,8 @@ class TestPatientForms(TestCase):
         self.assertIsNotNone(form.emergency_contact_name)
         self.assertIsNotNone(form.emergency_contact_phone)
         self.assertIsNotNone(form.emergency_contact_relationship)
-        self.assertIsNotNone(form.insurance_provider)
+        self.assertIsNotNone(form.payor_type)
+        self.assertIsNotNone(form.payor_detail)
         self.assertIsNotNone(form.insurance_policy_id)
         self.assertIsNotNone(form.insurance_group_number)
         self.assertIsNotNone(form.guarantor_name)
@@ -62,8 +63,9 @@ class TestPatientForms(TestCase):
         form.ethnicity.data = ''
         form.is_deceased.data = 'False'
         form.email.data = 'john.doe@example.com'
-        # Test new insurance and guarantor fields
-        form.insurance_provider.data = 'ABC Insurance'
+        # Test new payor and insurance fields
+        form.payor_type.data = 'Insurance'
+        form.payor_detail.data = 'ABC Insurance'
         form.insurance_policy_id.data = 'POL123456'
         form.insurance_group_number.data = 'GRP789012'
         form.guarantor_name.data = 'Jane Smith'
@@ -97,7 +99,8 @@ class TestPatientForms(TestCase):
         self.assertIsNotNone(form.problematic_patient)
         self.assertIsNotNone(form.loyalty_member)
         self.assertIsNotNone(form.ihs_number)
-        self.assertIsNotNone(form.insurance_provider)
+        self.assertIsNotNone(form.payor_type)
+        self.assertIsNotNone(form.payor_detail)
         self.assertIsNotNone(form.insurance_policy_id)
         self.assertIsNotNone(form.insurance_group_number)
         self.assertIsNotNone(form.guarantor_name)
@@ -133,8 +136,9 @@ class TestPatientForms(TestCase):
         form.ethnicity.data = ''
         form.is_deceased.data = 'False'
         form.email.data = 'jane.doe@example.com'
-        # Test new insurance and guarantor fields
-        form.insurance_provider.data = 'XYZ Insurance'
+        # Test new payor and insurance fields
+        form.payor_type.data = 'Insurance'
+        form.payor_detail.data = 'XYZ Insurance'
         form.insurance_policy_id.data = 'POL987654'
         form.insurance_group_number.data = 'GRP321098'
         form.guarantor_name.data = 'John Smith'

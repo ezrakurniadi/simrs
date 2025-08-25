@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Portal - EHR System{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 mb-4">Welcome to Patient Portal</h1>
+            <p class="lead mb-5">Access your medical records and manage your healthcare</p>
+            
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Patient Login</h5>
+                            <p class="card-text flex-grow-1">Access your medical records, appointments, and test results</p>
+                            <a href="{{ url_for('patient_auth.patient_login') }}" class="btn btn-primary mt-auto">Login</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Patient Registration</h5>
+                            <p class="card-text flex-grow-1">Register for access to your medical records</p>
+                            <a href="{{ url_for('patient_auth.patient_register') }}" class="btn btn-success mt-auto">Register</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-5">
+                <p>Are you a healthcare provider? <a href="{{ url_for('auth.home') }}">Staff Login</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

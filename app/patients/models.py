@@ -5,6 +5,9 @@ from app import db
 import uuid
 # Remove the direct import of Nationality to avoid circular import
 
+# Import choice constants from forms for reference
+from app.patients.forms import ETHNICITY_CHOICES, PREFERRED_LANGUAGE_CHOICES
+
 class Patient(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     first_name = db.Column(db.String(50), nullable=False)
@@ -60,6 +63,24 @@ class Patient(db.Model):
     @property
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
+
+    @staticmethod
+    def get_valid_ethnicities():
+        """Return list of valid ethnicity choices (excluding empty choice)"""
+        return [choice[0] for choice in ETHNICITY_CHOICES if choice[0]]
+
+    @staticmethod
+    def get_valid_preferred_languages():
+        """Return list of valid preferred language choices (excluding empty choice)"""
+        return [choice[0] for choice in PREFERRED_LANGUAGE_CHOICES if choice[0]]
+
+    def is_valid_ethnicity(self):
+        """Check if the patient's ethnicity is valid"""
+        return self.ethnicity in self.get_valid_ethnicities() if self.ethnicity else True
+
+    def is_valid_preferred_language(self):
+        """Check if the patient's preferred language is valid"""
+        return self.preferred_language in self.get_valid_preferred_languages() if self.preferred_language else True
         
 class Nationality(db.Model):
     __tablename__ = 'nationality'

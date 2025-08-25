@@ -59,7 +59,7 @@
                     </form>
 
                     <h3>Remove Role</h3>
-                    <form method="POST" action="{{ url_for('admin.assign_role', user_id=user.id) }}">
+                    <form method="POST" action="{{ url_for('admin.remove_role', user_id=user.id) }}">
                         {{ remove_role_form.hidden_tag() }}
                         <div class="form-group">
                             {{ remove_role_form.role_id.label(class="form-label") }}

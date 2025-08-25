@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import current_user
 from app.admin import bp
-from app.admin.forms import RoleForm, UserRoleForm, UserForm
+from app.admin.forms import RoleForm, UserRoleForm, UserForm, RemoveRoleForm
 from app.auth.models import Role, User, db
 from app.utils import roles_required
 
@@ -168,6 +168,8 @@ def delete_role(id):
 def remove_role(user_id):
     user = User.query.get_or_404(user_id)
     form = RemoveRoleForm()
+    # Populate the role choices
+    form.role_id.choices = [(role.id, role.name) for role in user.roles]
 
     if form.validate_on_submit():
         role_id = form.role_id.data
@@ -180,7 +182,15 @@ def remove_role(user_id):
         else:
             flash('Invalid role or user does not have this role.', 'error')
     else:
-        flash('Invalid form submission.', 'error')
+        # Add more detailed error information
+        error_messages = []
+        for field, errors in form.errors.items():
+            error_messages.append(f"{field}: {', '.join(errors)}")
+        
+        if error_messages:
+            flash(f"Form validation failed: {', '.join(error_messages)}", 'error')
+        else:
+            flash('Invalid form submission.', 'error')
 
     return redirect(url_for('admin.assign_role', user_id=user.id))
 
@@ -195,7 +205,8 @@ def assign_role(user_id):
     form.role_id.choices = [(role.id, role.name) for role in Role.query.all()]
     remove_role_form.role_id.choices = [(role.id, role.name) for role in user.roles]
 
-    if form.validate_on_submit():
+    # Check which form was submitted
+    if form.submit.data and form.validate_on_submit():
         role = Role.query.get(form.role_id.data)
         if role:
             # Check if user already has this role
@@ -209,7 +220,7 @@ def assign_role(user_id):
         else:
             flash('Invalid role selected.', 'error')
 
-    if remove_role_form.validate_on_submit():
+    if remove_role_form.submit.data and remove_role_form.validate_on_submit():
         role_id = remove_role_form.role_id.data
         role = Role.query.get(role_id)
 
