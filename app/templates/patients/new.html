@@ -180,16 +180,16 @@
                 </div>
                 
                 <div class="mb-3">
-                    {{ form.race.label(class="form-label") }}
-                    {% if form.race.errors %}
-                        {{ form.race(class="form-select", class_="form-select is-invalid") }}
+                    {{ form.nationality_id.label(class="form-label") }}
+                    {% if form.nationality_id.errors %}
+                        {{ form.nationality_id(class="form-select", class_="form-select is-invalid") }}
                         <div class="invalid-feedback">
-                            {% for error in form.race.errors %}
+                            {% for error in form.nationality_id.errors %}
                                 <p>{{ error }}</p>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.race(class="form-select") }}
+                        {{ form.nationality_id(class="form-select") }}
                     {% endif %}
                 </div>
                 

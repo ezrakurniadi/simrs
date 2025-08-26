@@ -97,7 +97,6 @@ class PatientForm(FlaskForm):
     guarantor_relationship = StringField('Guarantor Relationship to Patient')
     guarantor_phone = StringField('Guarantor Phone')
     guarantor_address = TextAreaField('Guarantor Address')
-    race = SelectField('Race', choices=[], validators=[Optional()], default='')
     ethnicity = SelectField('Ethnicity', choices=ETHNICITY_CHOICES, validators=[Optional()], default='')
     mrn = StringField('Medical Record Number (MRN)', render_kw={'readonly': True})
     is_deceased = SelectField('Status', choices=[(True, 'Deceased'), (False, 'Alive')], default=False)
@@ -226,7 +225,7 @@ class PatientRegistrationForm(PatientForm):
     mrn = StringField('Medical Record Number (MRN)', render_kw={'readonly': True})
 
     # Demographics
-    race = SelectField('Race',
+    nationality_id = SelectField('Nationality',
         validators=[Optional()],
         coerce=str,
         default='')
@@ -270,12 +269,12 @@ class PatientRegistrationForm(PatientForm):
         else:
             self.payor_detail.choices = [('', 'Select Payor Type First')]
             
-        # Set race choices from database
+        # Set nationality choices from database
         if hasattr(self, 'db') and self.db:
-            races = self.db.session.query(Race).all()
-            self.race.choices = [('', 'Select Race')] + [(r.name, r.name) for r in races]
+            nationalities = self.db.session.query(Nationality).all()
+            self.nationality_id.choices = [('', 'Select Nationality')] + [(n.id, n.name) for n in nationalities]
         else:
-            self.race.choices = [('', 'Select Race')]
+            self.nationality_id.choices = [('', 'Select Nationality')]
 
 class MedicationForm(FlaskForm):
     drug_name = StringField('Drug Name', validators=[DataRequired()])

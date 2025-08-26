@@ -49,6 +49,27 @@ function initializeDropdowns() {
             console.error('Error fetching ID types:', error);
         });
 
+    // Fetch nationalities from API
+    fetch('/api/nationalities')
+        .then(response => response.json())
+        .then(data => {
+            const nationalitySelect = document.getElementById('nationality_id');
+            // Clear existing options except the first one
+            while (nationalitySelect.options.length > 1) {
+                nationalitySelect.remove(1);
+            }
+            // Add nationalities from API
+            data.forEach(function(nationality) {
+                const option = document.createElement('option');
+                option.value = nationality.id;
+                option.textContent = nationality.name;
+                nationalitySelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching nationalities:', error);
+        });
+
     // Enhanced conditional field visibility with ARIA
     function toggleFieldVisibility(field, targetField) {
         if (field.value === 'True') {
@@ -148,21 +169,26 @@ function initializeDropdowns() {
         // Set initial state of payor detail dropdown
         if (selectedType === '') {
             payorDetailSelect.disabled = true;
+            // Clear existing options
+            payorDetailSelect.innerHTML = '';
+            // Add default option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Select Payor Type First';
+            payorDetailSelect.appendChild(defaultOption);
         } else {
             payorDetailSelect.disabled = false;
-        }
         
-        // Clear existing options
-        payorDetailSelect.innerHTML = '';
+            // Clear existing options
+            payorDetailSelect.innerHTML = '';
 
-        // Add default option
-        const defaultOption = document.createElement('option');
-        defaultOption.value = '';
-        defaultOption.textContent = 'Select ' + (selectedType ? selectedType + ' Detail' : 'Payor Type First');
-        payorDetailSelect.appendChild(defaultOption);
+            // Add default option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Select ' + selectedType + ' Detail';
+            payorDetailSelect.appendChild(defaultOption);
 
-        // Fetch payor details based on selected payor type
-        if (selectedType) {
+            // Fetch payor details based on selected payor type
             // Get payor type ID from the selected type name
             fetch(`/api/payor-types`)
                 .then(response => response.json())
