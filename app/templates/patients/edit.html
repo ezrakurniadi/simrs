@@ -5,12 +5,24 @@
 {% block head %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/patient-registration.css') }}">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+{% endblock %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ url_for('static', filename='js/dropdown-manager.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeDropdownManager();
+    });
+</script>
 {% endblock %}
 
 {% block content %}
 <h1>Edit Patient</h1>
 
-<form method="POST" action="" novalidate>
+<form method="POST" action="{{ url_for('patients.update_patient', id=patient.id) }}" novalidate>
     {{ form.hidden_tag() }}
 
     <div class="patient-registration-grid" role="form" aria-labelledby="form-title">
@@ -169,7 +181,7 @@
                                 {% endfor %}
                             </div>
                         {% else %}
-                            {{ form.mrn(class="form-control") }}
+                            {{ form.mrn(class="form-control", readonly="readonly") }}
                         {% endif %}
                     </div>
                 </div>
@@ -669,291 +681,10 @@
         </section>
 
         <div class="form-controls">
-            <button type="submit" class="btn btn-primary" aria-label="Save Patient Changes">Save Changes</button>
+            {{ form.submit(class="btn btn-primary", aria_label="Register Patient") }}
             <a href="{{ url_for('patients.index') }}" class="btn btn-secondary" role="button">Cancel</a>
         </div>
     </div>
 </form>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Accessibility enhancements
-    const form = document.querySelector('form');
-    form.setAttribute('novalidate', '');
-    
-    // Add ARIA attributes to form controls
-    const formControls = form.querySelectorAll('input, select, textarea');
-    formControls.forEach(control => {
-        if (!control.hasAttribute('aria-label') && !control.hasAttribute('aria-labelledby')) {
-            const label = form.querySelector(`label[for="${control.id}"]`);
-            if (label) {
-                control.setAttribute('aria-labelledby', label.id);
-            }
-        }
-    });
-    
-    // Fetch ID types from API
-    fetch('/api/id-types')
-        .then(response => response.json())
-        .then(data => {
-            const idTypeSelect = document.getElementById('id_type');
-            // Clear existing options except the first one
-            while (idTypeSelect.options.length > 1) {
-                idTypeSelect.remove(1);
-            }
-            // Add ID types from API
-            data.forEach(function(idType) {
-                const option = document.createElement('option');
-                option.value = idType.name;
-                option.textContent = idType.name;
-                if (option.value === idTypeSelect.getAttribute('data-initial-value')) {
-                    option.selected = true;
-                }
-                idTypeSelect.appendChild(option);
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching ID types:', error);
-        });
-    
-    // Enhanced conditional field visibility with ARIA
-    function toggleFieldVisibility(field, targetField) {
-        if (field.value === 'True') {
-            targetField.style.display = 'block';
-            targetField.setAttribute('aria-hidden', 'false');
-            // Focus the first input in the revealed field
-            const firstInput = targetField.querySelector('input, select, textarea');
-            if (firstInput) {
-                firstInput.focus();
-            }
-        } else {
-            targetField.style.display = 'none';
-            targetField.setAttribute('aria-hidden', 'true');
-        }
-    }
-    
-    // Initialize conditional fields
-    const conditionalFields = [
-        { field: 'problematic_patient', target: 'problematic_patient_reason_field' },
-        { field: 'loyalty_member', target: 'loyalty_member_number_field' },
-        { field: 'chronic_condition', target: 'chronic_condition_details_field' },
-        { field: 'allergy_alert', target: 'allergy_alert_details_field' }
-    ];
-    
-    conditionalFields.forEach(config => {
-        const field = document.querySelector(`select[name="${config.field}"]`);
-        const targetField = document.getElementById(config.target);
-        
-        if (field && targetField) {
-            // Set initial state
-            toggleFieldVisibility(field, targetField);
-            
-            // Add event listener
-            field.addEventListener('change', function() {
-                toggleFieldVisibility(field, targetField);
-            });
-            
-            // Enhanced keyboard navigation
-            field.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    field.value = field.value === 'True' ? 'False' : 'True';
-                    toggleFieldVisibility(field, targetField);
-                }
-            });
-        }
-    });
-    
-    // Form submission with enhanced validation
-    form.addEventListener('submit', function(e) {
-        let isValid = true;
-        const requiredFields = form.querySelectorAll('[required]');
-        
-        requiredFields.forEach(field => {
-            if (!field.value.trim()) {
-                isValid = false;
-                field.classList.add('is-invalid');
-                const feedback = field.parentElement.querySelector('.invalid-feedback') || 
-                               field.parentElement.nextElementSibling;
-                if (feedback) {
-                    feedback.style.display = 'block';
-                }
-            } else {
-                field.classList.remove('is-invalid');
-                const feedback = field.parentElement.querySelector('.invalid-feedback') || 
-                               field.parentElement.nextElementSibling;
-                if (feedback) {
-                    feedback.style.display = 'none';
-                }
-            }
-        });
-        
-        if (!isValid) {
-            e.preventDefault();
-            // Announce error to screen readers
-            const errorAlert = document.createElement('div');
-            errorAlert.className = 'alert alert-danger';
-            errorAlert.setAttribute('role', 'alert');
-            errorAlert.textContent = 'Please fill in all required fields.';
-            form.insertBefore(errorAlert, form.firstChild);
-            
-            // Focus the first invalid field
-            const firstInvalid = form.querySelector('.is-invalid');
-            if (firstInvalid) {
-                firstInvalid.focus();
-            }
-            
-            // Remove the alert after 5 seconds
-            setTimeout(() => {
-                if (errorAlert && errorAlert.parentNode) {
-                    errorAlert.parentNode.removeChild(errorAlert);
-                }
-            }, 5000);
-        }
-    });
-    
-    // Enhanced keyboard navigation for the form
-    const formGroups = form.querySelectorAll('.mb-3');
-    formGroups.forEach(group => {
-        const inputs = group.querySelectorAll('input, select, textarea');
-        inputs.forEach(input => {
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    // Find the next focusable element
-                    const focusableElements = form.querySelectorAll('input, select, textarea, button, a');
-                    const currentIndex = Array.from(focusableElements).indexOf(this);
-                    if (currentIndex < focusableElements.length - 1) {
-                        e.preventDefault();
-                        focusableElements[currentIndex + 1].focus();
-                    }
-                }
-            });
-        });
-    });
-    // Dynamic payor dropdowns
-    const payorTypeSelect = document.getElementById('payor-type');
-    const payorDetailSelect = document.getElementById('payor-detail');
-    
-    // Fetch payor types from API
-    fetch('/api/payor-types')
-        .then(response => response.json())
-        .then(data => {
-            // Clear existing options except the first one
-            while (payorTypeSelect.options.length > 1) {
-                payorTypeSelect.remove(1);
-            }
-            
-            // Add payor types from API
-            data.forEach(function(payorType) {
-                const option = document.createElement('option');
-                option.value = payorType.name;
-                option.textContent = payorType.name;
-                if (option.value === payorTypeSelect.getAttribute('data-initial-value')) {
-                    option.selected = true;
-                }
-                payorTypeSelect.appendChild(option);
-            });
-            
-            // Initialize payor detail dropdown based on existing payor type
-            const initialPayorType = payorTypeSelect.value;
-            if (initialPayorType) {
-                // Get payor type ID from the selected type name
-                fetch(`/api/payor-types`)
-                    .then(response => response.json())
-                    .then(payorTypes => {
-                        const payorType = payorTypes.find(pt => pt.name === initialPayorType);
-                        if (payorType) {
-                            return fetch(`/api/payor-details/${payorType.id}`);
-                        }
-                        return Promise.reject('Payor type not found');
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        // Clear existing options
-                        payorDetailSelect.innerHTML = '';
-                        
-                        // Add default option
-                        const defaultOption = document.createElement('option');
-                        defaultOption.value = '';
-                        defaultOption.textContent = 'Select ' + initialPayorType + ' Detail';
-                        payorDetailSelect.appendChild(defaultOption);
-                        
-                        // Add payor details from API
-                        data.forEach(function(detail) {
-                            const option = document.createElement('option');
-                            option.value = detail.name;
-                            option.textContent = detail.name;
-                            if (option.value === payorDetailSelect.getAttribute('data-initial-value')) {
-                                option.selected = true;
-                            }
-                            payorDetailSelect.appendChild(option);
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error fetching payor details:', error);
-                    });
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching payor types:', error);
-        });
-    
-    payorTypeSelect.addEventListener('change', function() {
-        const selectedType = this.value;
-        // Clear existing options
-        payorDetailSelect.innerHTML = '';
-        
-        // Add default option
-        const defaultOption = document.createElement('option');
-        defaultOption.value = '';
-        defaultOption.textContent = 'Select ' + (selectedType ? selectedType + ' Detail' : 'Payor Type First');
-        payorDetailSelect.appendChild(defaultOption);
-        
-        // Fetch payor details based on selected payor type
-        if (selectedType) {
-            // Get payor type ID from the selected type name
-            fetch(`/api/payor-types`)
-                .then(response => response.json())
-                .then(payorTypes => {
-                    const payorType = payorTypes.find(pt => pt.name === selectedType);
-                    if (payorType) {
-                        return fetch(`/api/payor-details/${payorType.id}`);
-                    }
-                    return Promise.reject('Payor type not found');
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Add payor details from API
-                    data.forEach(function(detail) {
-                        const option = document.createElement('option');
-                        option.value = detail.name;
-                        option.textContent = detail.name;
-                        payorDetailSelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching payor details:', error);
-                });
-        }
-    });
-    
-    // Set initial state of payor detail dropdown
-    if (payorTypeSelect.value === '') {
-        payorDetailSelect.disabled = true;
-    } else {
-        payorDetailSelect.disabled = false;
-    }
-    
-    // Enable payor detail dropdown when payor type is selected
-    payorTypeSelect.addEventListener('change', function() {
-        if (this.value) {
-            payorDetailSelect.disabled = false;
-            // Focus the payor detail field when enabled
-            payorDetailSelect.focus();
-        } else {
-            payorDetailSelect.disabled = true;
-        }
-    });
-});
-</script>
 {% endblock %}
